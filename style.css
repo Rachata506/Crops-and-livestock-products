@@ -1,0 +1,207 @@
+/* SHARED THEME: everyone uses these variables, no hard-coded colors in page code */
+:root {
+    /* Surfaces: white / ivory */
+    --bg: #fffef8;
+    --surface: #ffffff;
+    --line: #e6e2d3;
+    /* Text */
+    --ink: #1f2933;
+    --muted: #5f6b76;
+    /* UI accents (nav, headings, buttons) */
+    --green: #1f6f4a;
+    --gold: #e69f00;
+    --soil: #8c564b;
+    --sky: #0072b2;
+    --radius: 10px;
+    --font: "Inter", "Segoe UI", system-ui, sans-serif;
+    --serif: Georgia, "Times New Roman", serif;
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 var(--font)
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 24px;
+    background: var(--green);
+    color: #fff
+}
+
+nav strong {
+    font-family: var(--serif);
+    margin-right: auto;
+    font-size: 18px
+}
+
+nav a {
+    color: #e8f0e2;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent
+}
+
+nav a.active,
+nav a:hover {
+    color: #fff;
+    border-color: var(--gold)
+}
+
+#demo-banner {
+    background: var(--gold);
+    padding: 6px 24px;
+    font-size: 13px
+}
+
+.page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 56px 24px;
+    min-height: 70vh;
+    scroll-margin-top: 50px;
+    border-bottom: 1px solid var(--line)
+}
+
+.page h2 {
+    font-family: var(--serif);
+    font-size: 30px;
+    margin: 0 0 4px;
+    color: var(--green)
+}
+
+.takeaway {
+    color: var(--muted);
+    font-style: italic;
+    margin: 0 0 20px;
+    border-left: 3px solid var(--gold);
+    padding-left: 10px
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px
+}
+
+.controls label {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    color: var(--muted)
+}
+
+select,
+button {
+    font: inherit;
+    font-size: 14px;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer
+}
+
+button:hover,
+select:hover {
+    border-color: var(--green)
+}
+
+.placeholder {
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--muted);
+    background: var(--surface)
+}
+
+.placeholder h3 {
+    margin: 0 0 6px;
+    color: var(--soil)
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0
+}
+
+.legend button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 99px
+}
+
+.legend button.off {
+    opacity: .35;
+    text-decoration: line-through
+}
+
+.legend i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block
+}
+
+.tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--ink);
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    z-index: 20;
+    max-width: 260px
+}
+
+svg {
+    width: 100%;
+    height: auto;
+    display: block
+}
+
+.axis text {
+    fill: var(--muted);
+    font-size: 12px
+}
+
+.axis path,
+.axis line {
+    stroke: var(--line)
+}
+
+footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 13px;
+    color: var(--muted)
+}
