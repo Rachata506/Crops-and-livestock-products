@@ -44,3 +44,23 @@ function demoData() {
     }
     return rows;
 }
+
+export function yearControl(selector, years, onChange) {
+    const el = d3.select(selector);
+    el.html('');
+    const slider = el.append('input').attr('type', 'range')
+        .attr('min', 0).attr('max', years.length - 1).attr('value', years.length - 1);
+    const label = el.append('span').style('margin', '0 10px').text(years[years.length - 1]);
+    const play = el.append('button').attr('type', 'button').text('▶ Play');
+    let timer = null;
+    const set = i => { label.text(years[i]); onChange(years[i]); };
+    slider.on('input', function () { set(+this.value); });
+    play.on('click', () => {
+        if (timer) { clearInterval(timer); timer = null; play.text('▶ Play'); return; }
+        play.text('⏸ Pause');
+        timer = setInterval(() => {
+            const i = (+slider.property('value') + 1) % years.length;
+            slider.property('value', i); set(i);
+        }, 400);
+    });
+}
