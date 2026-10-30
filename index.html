@@ -1,16 +1,86 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>crops-and-livestock-products</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Crops and Livestock Products</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./page6.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script type="module" src="./js/main.js"></script>
 </head>
 
 <body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
-</body>
+  <nav aria-label="Dashboard navigation">
+    <strong>Crops &amp; Livestock</strong>
 
+    <a href="#p1">Page 1</a>
+    <a href="#p2">Page 2</a>
+    <a href="#p3">Page 3</a>
+    <a href="#p4">Page 4</a>
+    <a href="#p5">Page 5</a>
+    <a href="#p6">Country Profile &amp; Compare</a>
+    <a href="#p7">Page 7</a>
+  </nav>
+
+  <div id="demo-banner" role="status" hidden>
+    Demo data is being displayed because the source CSV could not be loaded.
+  </div>
+
+  <main>
+    <section id="p1" class="page" aria-labelledby="p1-title">
+      <h2 id="p1-title">Page 1</h2>
+      <div id="p1-root"></div>
+    </section>
+
+    <section id="p2" class="page" aria-labelledby="p2-title">
+      <h2 id="p2-title">Page 2</h2>
+      <div id="p2-root"></div>
+    </section>
+
+    <section id="p3" class="page" aria-labelledby="p3-title">
+      <h2 id="p3-title">Page 3</h2>
+      <div id="p3-root"></div>
+    </section>
+
+    <section id="p4" class="page" aria-labelledby="p4-title">
+      <h2 id="p4-title">Page 4</h2>
+      <div id="p4-root"></div>
+    </section>
+
+    <section id="p5" class="page" aria-labelledby="p5-title">
+      <h2 id="p5-title">Page 5</h2>
+      <div id="p5-root"></div>
+    </section>
+
+    <section id="p6" class="page" aria-labelledby="p6-title">
+      <h2 id="p6-title">Country Profile &amp; Compare</h2>
+
+      <p class="takeaway">
+        Explore and compare crop data across selected countries.
+      </p>
+
+      <div id="p6-root"></div>
+    </section>
+
+    <section id="p7" class="page" aria-labelledby="p7-title">
+      <h2 id="p7-title">Page 7</h2>
+      <div id="p7-root"></div>
+    </section>
+  </main>
+
+  <div
+    id="tooltip"
+    class="tooltip"
+    role="tooltip"
+    hidden
+  ></div>
+
+  <footer>
+    Crops and Livestock Products Dashboard · Source: FAOSTAT
+  </footer>
+</body>
 </html>
