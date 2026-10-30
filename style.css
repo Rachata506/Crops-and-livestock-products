@@ -19,23 +19,17 @@
     box-sizing: border-box
 }
 
-html, body {
+html {
+    scroll-behavior: smooth;
+}
+
+body {
     margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
     background: var(--bg);
     color: var(--ink);
     font: 17px/1.7 var(--font);
 }
 
-main {
-    width: 100%;
-    height: 100%;
-    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-}
 
 /* reading progress bar */
 #progress {
@@ -112,18 +106,16 @@ main {
     display: none;
 }
 
-/* sections: presentation slides */
+/* sections: full-height slides */
 .page {
-    padding: 36px 24px 44px;
-    height: 100vh;
-    width: 100%;
+    padding: 56px 24px;
+    min-height: 100vh;
     background: #ffffff;
     display: flex;
     flex-direction: column;
     justify-content: center;
     box-sizing: border-box;
     position: relative;
-    overflow-y: auto;
 }
 
 .page>* {
@@ -154,98 +146,81 @@ main {
     max-width: 720px;
 }
 
-/* presentation slide transition motion */
+/* presentation slide entrance: starts slightly down + transparent, lifts in on scroll */
 .reveal {
-    opacity: 0.12;
-    transform: translateY(32px) scale(0.975);
-    filter: blur(3px);
-    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-                filter 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform, filter;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
 }
 
 .reveal.in {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
+    transform: none;
 }
 
-/* Staggered presentation entrance for slide contents */
-.page h2,
-.page .takeaway,
-.page .card,
-.page .hero {
-    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
+/* Staggered children: only animate IN, never hide before observer fires */
+.reveal.in h2 {
+    animation: slideUp 0.6s 0.05s both cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.page:not(.in) h2 {
-    opacity: 0;
-    transform: translateY(-16px);
-}
-.page.in h2 {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.08s;
+.reveal.in .takeaway {
+    animation: slideLeft 0.6s 0.12s both cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.page:not(.in) .takeaway {
-    opacity: 0;
-    transform: translateX(-16px);
-}
-.page.in .takeaway {
-    opacity: 1;
-    transform: translateX(0);
-    transition-delay: 0.16s;
+.reveal.in .card {
+    animation: slideUp 0.65s 0.18s both cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.page:not(.in) .card {
-    opacity: 0;
-    transform: translateY(22px) scale(0.98);
-}
-.page.in .card {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transition-delay: 0.22s;
+.reveal.in .hero {
+    animation: slideUp 0.65s 0.08s both cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.page:not(.in) .hero {
-    opacity: 0;
-    transform: translateY(20px);
-}
-.page.in .hero {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.12s;
+.reveal.in .next {
+    animation: slideUp 0.5s 0.28s both cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.page:not(.in) .next {
-    opacity: 0;
-    transform: translateY(-6px);
+.reveal.in .p3 {
+    animation: slideUp 0.65s 0.18s both cubic-bezier(0.16, 1, 0.3, 1);
 }
-.page.in .next {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.32s;
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(22px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes slideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-        scroll-snap-type: none;
-    }
 
     .reveal,
-    .page h2,
-    .page .takeaway,
-    .page .card,
-    .page .hero,
-    .page .next {
+    .reveal h2,
+    .reveal .takeaway,
+    .reveal .card,
+    .reveal .hero,
+    .reveal .p3,
+    .reveal .next {
+        animation: none !important;
         opacity: 1 !important;
         transform: none !important;
-        filter: none !important;
         transition: none !important;
     }
 }
@@ -355,8 +330,15 @@ main {
 }
 
 @keyframes slideBounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(6px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(6px);
+    }
 }
 
 .card {

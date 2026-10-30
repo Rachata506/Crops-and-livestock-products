@@ -32,7 +32,7 @@ pages.forEach((s, i) => {
     if (pages[i + 1]) s.insertAdjacentHTML('beforeend', `<a class="next" href="#${pages[i + 1].id}" aria-label="Next slide">↓</a>`);
 });
 
-// Presentation motion: activate slide when it scrolls into view, reset when leaving so each slide transition animates
+// Presentation motion: activate slide when it scrolls into view
 const slideObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -42,7 +42,7 @@ const slideObserver = new IntersectionObserver((entries) => {
             entry.target.classList.remove('in');
         }
     });
-}, { threshold: 0.3 });
+}, { threshold: 0.05 });
 
 pages.forEach(s => {
     s.classList.add('reveal');

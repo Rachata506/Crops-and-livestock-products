@@ -1,114 +1,148 @@
-// PAGE 3: Trends Over Time (owner: ___)
-// Interactions: measure + country selectors, click legend to hide/show a crop,
-// drag on the small context chart to zoom, hover for values by year.
-import { cropColor, MEASURES, fmt, fmtYear, tooltip } from '../shared.js';
+// PAGE 3: Trends over time. "How has production changed since 1961?"
+// Interactions: country selector, Tonnes / Growth toggle, click a crop to hide it, hover for values by year.
+import { cropColor, tooltip } from '../shared.js';
+
+const fmtT = v => d3.format('.3~s')(v).replace('G', 'B');     // 1.5B, 295M, 3.8k
 
 export function init(data, root) {
-    const crops = Array.from(new Set(data.map(d => d.crop))).sort();
-    const countries = ['World total', ...Array.from(new Set(data.map(d => d.country))).sort()];
-    const state = { measure: 'production', country: 'World total', hidden: new Set(), domain: null };
+    const crops = [...new Set(data.map(d => d.crop))].sort();
+    const areas = ['All countries', ...[...new Set(data.map(d => d.country))].sort()];
+    const [y0, y1] = d3.extent(data, d => d.year);
+    const years = d3.range(y0, y1 + 1);
+    const st = { area: 'All countries', mode: 'tonnes', hidden: new Set() };
 
     root.innerHTML = `
-    <div class="card">
-      <div class="controls">
-        <label>Measure <select id="p3-measure">${Object.entries(MEASURES).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('')}</select></label>
-        <label>Area <select id="p3-country">${countries.map(c => `<option>${c}</option>`).join('')}</select></label>
-        <button id="p3-all">Show all crops</button>
-        <button id="p3-reset">Reset zoom</button>
+    <style>
+      .p3 { display: grid; grid-template-columns: minmax(250px, 1fr) 2fr; gap: 36px; align-items: center }
+      .p3 h2 { margin: 0 0 12px !important }
+      .p3 .p3-lead { color: var(--muted); font-size: 17px; margin: 0 0 18px }
+      .p3-stats { display: flex; flex-wrap: wrap; gap: 22px; margin: 0 0 18px }
+      .p3-stats b { display: block; font-family: var(--serif); font-size: 32px; line-height: 1.05; color: var(--gold) }
+      .p3-stats span { font-size: 13px; color: var(--muted) }
+      .p3-take { border-left: 3px solid var(--gold); padding-left: 12px; margin: 0; font-size: 15px }
+      .p3 .seg { display: inline-flex }
+      .p3 .seg button { border-radius: 0 }
+      .p3 .seg button:first-child { border-radius: 6px 0 0 6px }
+      .p3 .seg button:last-child { border-radius: 0 6px 6px 0; border-left: 0 }
+      .p3 .seg button.on { background: var(--green); border-color: var(--green); color: #fff }
+      @media (max-width: 860px) { .p3 { grid-template-columns: 1fr; gap: 18px } }
+    </style>
+    <div class="p3">
+      <div>
+        <h2>How has production changed since ${y0}?</h2>
+        <p class="p3-lead">Total harvest of the crops in this dataset, year by year.</p>
+        <div class="p3-stats">
+          <div><b id="p3-s0"></b><span>in ${y0}</span></div>
+          <div><b id="p3-s1"></b><span>in ${y1}</span></div>
+          <div><b id="p3-sx"></b><span>growth</span></div>
+        </div>
+        <p class="p3-take" id="p3-takeaway"></p>
       </div>
-      <div class="legend" id="p3-legend"></div>
-      <svg id="p3-main" viewBox="0 0 960 360"></svg>
-      <svg id="p3-ctx" viewBox="0 0 960 80"></svg>
-      <p style="font-size:13px;color:var(--muted);margin:6px 0 0">Tip: drag on the small chart to zoom into a period. Click a crop to hide it.</p>
+      <div class="card">
+        <div class="controls">
+          <label>Area <select id="p3-area">${areas.map(a => `<option>${a}</option>`).join('')}</select></label>
+          <span class="seg"><button type="button" data-mode="tonnes" class="on">Tonnes</button><button type="button" data-mode="growth">Growth (×${y0})</button></span>
+        </div>
+        <div class="legend" id="p3-legend"></div>
+        <svg id="p3-svg" viewBox="0 0 760 380"></svg>
+      </div>
     </div>`;
 
-    const W = 960, m = { t: 10, r: 20, b: 26, l: 64 }, iw = W - m.l - m.r;
-    const H = 360, ih = H - m.t - m.b, ch = 50;
-    const years = d3.extent(data, d => d.year);
-    const xFull = d3.scaleLinear(years, [0, iw]);
-
-    // main chart scaffolding
-    const g = d3.select('#p3-main').append('g').attr('transform', `translate(${m.l},${m.t})`);
-    g.append('defs').append('clipPath').attr('id', 'p3-clip').append('rect').attr('width', iw).attr('height', ih);
-    const gx = g.append('g').attr('class', 'axis').attr('transform', `translate(0,${ih})`);
+    const W = 760, H = 380, m = { t: 14, r: 86, b: 28, l: 58 }, iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const x = d3.scaleLinear([y0, y1], [0, iw]);
+    const g = d3.select('#p3-svg').append('g').attr('transform', `translate(${m.l},${m.t})`);
+    const gx = g.append('g').attr('class', 'axis').attr('transform', `translate(0,${ih})`).call(d3.axisBottom(x).ticks(8).tickFormat(d3.format('d')));
     const gy = g.append('g').attr('class', 'axis');
-    const yLabel = g.append('text').attr('x', -ih / 2).attr('y', -48).attr('transform', 'rotate(-90)').attr('text-anchor', 'middle').attr('fill', 'var(--muted)').attr('font-size', 12);
-    const lineG = g.append('g').attr('clip-path', 'url(#p3-clip)');
+    const yTitle = g.append('text').attr('transform', 'rotate(-90)').attr('x', -ih / 2).attr('y', -44).attr('text-anchor', 'middle').attr('fill', 'var(--muted)').attr('font-size', 12);
+    const layer = g.append('g');
     const cross = g.append('line').attr('y1', 0).attr('y2', ih).attr('stroke', 'var(--ink)').attr('stroke-dasharray', '3 3').attr('opacity', 0);
     const overlay = g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'none').attr('pointer-events', 'all');
 
-    // context chart + brush
-    const c = d3.select('#p3-ctx').append('g').attr('transform', `translate(${m.l},5)`);
-    const cLines = c.append('g');
-    c.append('g').attr('class', 'axis').attr('transform', `translate(0,${ch})`).call(d3.axisBottom(xFull).ticks(10).tickFormat(fmtYear));
-    const brush = d3.brushX().extent([[0, 0], [iw, ch]]).on('brush end', e => {
-        state.domain = e.selection ? e.selection.map(xFull.invert) : null;
-        drawMain();
-    });
-    const brushG = c.append('g').call(brush);
-
-    let series = [];
-    const x = () => d3.scaleLinear(state.domain || years, [0, iw]);
+    let byCrop = new Map(), vis = [], growth = [], y = null;
 
     function compute() {
-        const rows = state.country === 'World total' ? data : data.filter(d => d.country === state.country);
-        const roll = d3.rollup(rows, v => {
-            const a = d3.sum(v, d => d.area), p = d3.sum(v, d => d.production);
-            return state.measure === 'area' ? a : state.measure === 'production' ? p : (a ? p / a : 0); // yield = production / area (weighted)
-        }, d => d.crop, d => d.year);
-        series = crops.map(crop => ({ crop, values: Array.from(roll.get(crop) || [], ([year, value]) => ({ year, value })).sort((a, b) => a.year - b.year) }));
+        const rows = st.area === 'All countries' ? data : data.filter(d => d.country === st.area);
+        const r = d3.rollup(rows, v => d3.sum(v, d => d.production), d => d.crop, d => d.year);
+        byCrop = new Map(crops.map(c => [c, years.map(yr => ({ year: yr, value: r.get(c)?.get(yr) ?? 0 }))]));
     }
 
-    const visible = () => series.filter(s => !state.hidden.has(s.crop));
+    function summary() {
+        const tot = i => d3.sum(crops, c => byCrop.get(c)[i].value), last = years.length - 1;
+        const a = tot(0), b = tot(last);
+        const gr = crops.filter(c => byCrop.get(c)[0].value > 0 && byCrop.get(c)[last].value > 0)
+            .map(c => ({ c, f: byCrop.get(c)[last].value / byCrop.get(c)[0].value })).sort((p, q) => q.f - p.f);
+        const big = crops.map(c => ({ c, v: byCrop.get(c)[last].value })).sort((p, q) => q.v - p.v)[0];
+        document.getElementById('p3-s0').textContent = fmtT(a) + ' t';
+        document.getElementById('p3-s1').textContent = fmtT(b) + ' t';
+        document.getElementById('p3-sx').textContent = a ? '×' + (b / a).toFixed(1) : '–';
+        const where = st.area === 'All countries' ? 'across these four countries' : 'in ' + st.area;
+        document.getElementById('p3-takeaway').textContent = a && b
+            ? `Production ${where} grew ×${(b / a).toFixed(1)} between ${y0} and ${y1}. ` +
+            (gr.length ? `${gr[0].c} grew the most (×${gr[0].f.toFixed(1)}), ` : '') +
+            (big && big.v ? `and ${big.c} makes up ${Math.round(100 * big.v / b)}% of the ${y1} total.` : '')
+            : `No production recorded ${where} in ${y0} or ${y1}.`;
+    }
 
     function drawLegend() {
         d3.select('#p3-legend').selectAll('button').data(crops).join('button')
-            .attr('class', d => state.hidden.has(d) ? 'off' : '')
+            .attr('type', 'button').attr('class', d => st.hidden.has(d) ? 'off' : '')
             .html(d => `<i style="background:${cropColor(d)}"></i>${d}`)
-            .on('click', (e, d) => { state.hidden.has(d) ? state.hidden.delete(d) : state.hidden.add(d); drawLegend(); drawMain(); drawCtx(); });
+            .on('click', (e, d) => { st.hidden.has(d) ? st.hidden.delete(d) : st.hidden.add(d); drawLegend(); draw(); });
     }
 
-    function drawCtx() {
-        const vis = visible(), ymax = d3.max(vis, s => d3.max(s.values, d => d.value)) || 1;
-        const y = d3.scaleLinear([0, ymax], [ch, 0]);
-        const line = d3.line().x(d => xFull(d.year)).y(d => y(d.value));
-        cLines.selectAll('path').data(vis, s => s.crop).join('path')
-            .attr('fill', 'none').attr('stroke', s => cropColor(s.crop)).attr('stroke-width', 1).attr('d', s => line(s.values));
-    }
+    function draw() {
+        vis = crops.filter(c => !st.hidden.has(c));
+        layer.selectAll('*').remove();
+        if (st.mode === 'tonnes') {
+            const rows = years.map((yr, i) => Object.fromEntries([['year', yr], ...vis.map(c => [c, byCrop.get(c)[i].value])]));
+            const stack = d3.stack().keys(vis)(rows);
+            const ymax = d3.max(stack.at(-1) || [], d => d[1]) || 1;
+            y = d3.scaleLinear([0, ymax * 1.05], [ih, 0]).nice();
+            const area = d3.area().x(d => x(d.data.year)).y0(d => y(d[0])).y1(d => y(d[1]));
+            layer.selectAll('path').data(stack).join('path').attr('fill', s => cropColor(s.key)).attr('fill-opacity', .88).attr('stroke', '#fff').attr('stroke-width', .6).attr('d', area);
+            gy.call(d3.axisLeft(y).ticks(5).tickFormat(fmtT));
+            yTitle.text('Production (tonnes)');
+            const last = stack.at(-1)?.at(-1);
+            if (last) layer.append('text').attr('x', iw + 6).attr('y', y(last[1]) + 4).attr('font-size', 12).attr('font-weight', 700).attr('fill', 'var(--ink)').text(fmtT(last[1]) + ' t');
+        } else {
+            growth = vis.filter(c => byCrop.get(c)[0].value > 0).map(c => ({ crop: c, v: byCrop.get(c).map(d => ({ year: d.year, r: d.value / byCrop.get(c)[0].value })) }));
+            const ymax = d3.max(growth, s => d3.max(s.v, d => d.r)) || 1;
+            y = d3.scaleLinear([0, ymax * 1.08], [ih, 0]).nice();
+            const line = d3.line().x(d => x(d.year)).y(d => y(d.r));
+            layer.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(1)).attr('y2', y(1)).attr('stroke', 'var(--muted)').attr('stroke-dasharray', '4 4');
+            layer.append('text').attr('x', 4).attr('y', y(1) - 5).attr('font-size', 11).attr('fill', 'var(--muted)').text(`${y0} level`);
+            layer.selectAll('path.ln').data(growth).join('path').attr('class', 'ln').attr('fill', 'none').attr('stroke', s => cropColor(s.crop)).attr('stroke-width', 2.4).attr('d', s => line(s.v));
+            // end labels, nudged apart so they don't overlap
+            let prev = Infinity;
+            growth.map(s => ({ s, ly: y(s.v.at(-1).r) })).sort((p, q) => p.ly - q.ly).reverse().forEach(o => {
+                o.ly = Math.min(o.ly, prev - 14); prev = o.ly;
+                layer.append('text').attr('x', iw + 6).attr('y', o.ly + 4).attr('font-size', 12).attr('font-weight', 700).attr('fill', cropColor(o.s.crop)).text('×' + o.s.v.at(-1).r.toFixed(1));
+            });
+            gy.call(d3.axisLeft(y).ticks(6).tickFormat(d => '×' + d));
+            yTitle.text(`Production relative to ${y0}`);
+        }
+        const skipped = st.mode === 'growth' ? vis.filter(c => byCrop.get(c)[0].value === 0) : [];
+        if (skipped.length) layer.append('text').attr('x', iw).attr('y', ih - 6).attr('text-anchor', 'end').attr('font-size', 11).attr('fill', 'var(--muted)').text(`Not shown (no ${y0} output): ${skipped.join(', ')}`);
 
-    function drawMain() {
-        const xs = x(), vis = visible(), [x0, x1] = xs.domain();
-        const ymax = d3.max(vis, s => d3.max(s.values.filter(d => d.year >= x0 && d.year <= x1), d => d.value)) || 1;
-        const y = d3.scaleLinear([0, ymax * 1.05], [ih, 0]).nice();
-        gx.call(d3.axisBottom(xs).ticks(10).tickFormat(fmtYear));
-        gy.call(d3.axisLeft(y).ticks(6).tickFormat(fmt));
-        yLabel.text(`${MEASURES[state.measure].label} (${MEASURES[state.measure].unit})`);
-        const line = d3.line().x(d => xs(d.year)).y(d => y(d.value));
-        lineG.selectAll('path').data(vis, s => s.crop).join('path')
-            .attr('fill', 'none').attr('stroke', s => cropColor(s.crop)).attr('stroke-width', 2.2).attr('d', s => line(s.values));
-
-        overlay.on('mousemove', e => {
-            const [mx] = d3.pointer(e), yr = Math.round(xs.invert(mx));
-            const rows = vis.map(s => ({ crop: s.crop, v: s.values.find(d => d.year === yr)?.value })).filter(r => r.v != null).sort((a, b) => b.v - a.v);
-            cross.attr('x1', xs(yr)).attr('x2', xs(yr)).attr('opacity', 1);
-            tooltip.show(`<b>${yr}</b><br>` + rows.map(r => `<span style="color:${cropColor(r.crop)}">●</span> ${r.crop}: ${fmt(r.v)}`).join('<br>'), e);
+        overlay.raise().on('mousemove', e => {
+            const [mx] = d3.pointer(e), yr = Math.max(y0, Math.min(y1, Math.round(x.invert(mx)))), i = yr - y0;
+            cross.attr('x1', x(yr)).attr('x2', x(yr)).attr('opacity', 1).raise();
+            overlay.raise();
+            const list = vis.map(c => ({ c, v: byCrop.get(c)[i].value, b: byCrop.get(c)[0].value })).sort((p, q) => q.v - p.v);
+            let html = `<b>${yr}</b><br>`;
+            if (st.mode === 'tonnes') html += list.map(o => `<span style="color:${cropColor(o.c)}">●</span> ${o.c}: ${fmtT(o.v)} t`).join('<br>') + `<br><b>Total: ${fmtT(d3.sum(list, o => o.v))} t</b>`;
+            else html += list.filter(o => o.b > 0).map(o => `<span style="color:${cropColor(o.c)}">●</span> ${o.c}: ×${(o.v / o.b).toFixed(1)}`).join('<br>');
+            tooltip.show(html, e);
         }).on('mouseleave', () => { cross.attr('opacity', 0); tooltip.hide(); });
-
-        // dynamic takeaway: growth of the fastest-growing visible crop in the selected period
-        const growth = vis.map(s => {
-            const v = s.values.filter(d => d.year >= x0 && d.year <= x1);
-            return { crop: s.crop, f: v.length > 1 && v[0].value ? v[v.length - 1].value / v[0].value : 0, a: v[0]?.year, b: v[v.length - 1]?.year };
-        }).sort((a, b) => b.f - a.f)[0];
-        const el = document.getElementById('p3-takeaway');
-        if (growth && growth.f) el.textContent = `Takeaway: ${state.country}, ${growth.a}-${growth.b}: ${growth.crop} grew the most in ${MEASURES[state.measure].label.toLowerCase()} (x${growth.f.toFixed(1)}).`;
     }
 
-    function refresh() { compute(); drawLegend(); drawMain(); drawCtx(); }
+    function refresh() { compute(); summary(); drawLegend(); draw(); }
 
-    d3.select('#p3-measure').on('change', e => { state.measure = e.target.value; refresh(); });
-    d3.select('#p3-country').on('change', e => { state.country = e.target.value; refresh(); });
-    d3.select('#p3-all').on('click', () => { state.hidden.clear(); drawLegend(); drawMain(); drawCtx(); });
-    d3.select('#p3-reset').on('click', () => brushG.call(brush.move, null));
-
+    d3.select('#p3-area').on('change', e => { st.area = e.target.value; refresh(); });
+    d3.selectAll('.p3 .seg button').on('click', function () {
+        st.mode = this.dataset.mode;
+        d3.selectAll('.p3 .seg button').classed('on', function () { return this === this.parentNode.querySelector(`[data-mode="${st.mode}"]`); });
+        draw();
+    });
     refresh();
 }
