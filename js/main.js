@@ -9,11 +9,14 @@ import * as p7 from './pages/page7.js';
 
 const data = await loadData();
 if (data.isDemo) document.getElementById('demo-banner').hidden = false;
-[p1, p2, p3, p4, p5, p6, p7].forEach((p, i) => p.init(data, document.getElementById('p' + (i + 1) + '-root')));
+[p1, p2, p3, p4, p5, p6, p7].forEach((page, index) => {
+    const root = document.getElementById(`p${index + 1}-root`);
 
-// highlight current page in nav
-const links = [...document.querySelectorAll('nav a')];
-const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.hash === '#' + e.target.id));
-}), { rootMargin: '-40% 0px -55% 0px' });
-document.querySelectorAll('.page').forEach(s => io.observe(s));
+    if (!root) return;
+
+    if (typeof page.init === 'function') {
+        page.init(data, root);
+    } else {
+        root.textContent = 'This page has not been added yet.';
+    }
+});
