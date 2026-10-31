@@ -1,294 +1,296 @@
-/* PAGE 3: Scoped styles aligned with style.css design tokens */
+/* PAGE 3 - Trends Over Time.
+   Everything is scoped to #p3 so no other page changes. Layout: text + controls on the left, chart on the right. */
 #p3 {
-    --p3-card: var(--surface, #ffffff);
-    --p3-line: var(--line, #e6e2d3);
-    --p3-ink: var(--ink, #1f2933);
-    --p3-muted: var(--muted, #5f6b76);
-    --p3-green: var(--green, #1f6f4a);
-    --p3-gold: var(--gold, #e69f00);
-}
-
-#p3-root {
-    width: 100%;
-    max-width: 1060px;
-    margin: 0 auto;
-}
-
-#p3-root h1 {
-    font-family: var(--serif, Georgia, serif);
-    font-size: clamp(28px, 3.5vw, 40px);
-    line-height: 1.15;
-    margin: 0 0 6px;
-    color: var(--p3-green);
-    letter-spacing: -0.01em;
-}
-
-#p3-root .sub {
-    color: var(--p3-muted);
-    font-size: 16px;
-    margin: 0 0 18px;
-    line-height: 1.5;
-}
-
-/* Controls row */
-#p3-root .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 14px;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 14px;
-}
-
-#p3-root label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--p3-muted);
-    font-weight: 500;
-}
-
-#p3-root select {
-    font: inherit;
-    font-size: 13px;
+    --p3-bg: white;
+    --p3-ink: #1c1c1a;
+    --p3-ink2: #55534e;
+    --p3-muted: #9a978f;
+    --p3-line: #e6e3dc;
+    --p3-hl: #e9e6dd;
+    --c1: #2a78d6;
+    --c2: #eb6834;
+    --c3: #1baf7a;
+    --c4: #eda100;
+    --c5: #e87ba4;
+    --c6: #008300;
+    --c7: #6250d6;
+    --c-other: #9a978f;
+    background: var(--p3-bg);
     color: var(--p3-ink);
-    background: var(--p3-card);
-    border: 1px solid var(--p3-line);
-    border-radius: 8px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
+    font: 15px/1.55 -apple-system, "Open Sans", "Segoe UI", Roboto, sans-serif;
 }
 
-#p3-root select:hover {
-    border-color: var(--p3-green);
+#p3.page {
+    display: grid;
+    grid-template-columns: minmax(260px, 5fr) 7fr;
+    gap: 48px;
+    align-items: center;
+    justify-content: normal;
+    padding: 40px 90px 40px 56px;
 }
 
-/* Segmented button groups */
-#p3-root .seg {
-    display: inline-flex;
-    border: 1px solid var(--p3-line);
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--p3-card);
-    box-shadow: 0 1px 3px rgba(31, 41, 51, 0.04);
+#p3>* {
+    max-width: none;
+    width: auto;
+    margin: 0;
 }
 
-#p3-root .seg button {
-    border: 0;
-    border-right: 1px solid var(--p3-line);
-    background: transparent;
-    color: var(--p3-muted);
-    padding: 6px 14px;
-    font: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
+/* beat .page > * { max-width: 1060px } */
+#p3 .text {
+    max-width: 460px;
+    justify-self: end;
 }
 
-#p3-root .seg button:last-child {
-    border-right: 0;
-}
-
-#p3-root .seg button:hover:not(.on) {
-    background: rgba(31, 111, 74, 0.06);
+#p3 h2 {
+    font: 700 26px/1.2 -apple-system, "Open Sans", "Segoe UI", Roboto, sans-serif;
     color: var(--p3-ink);
+    margin: 0 0 14px;
 }
 
-#p3-root .seg button.on {
-    background: var(--p3-green);
-    color: #ffffff;
+#p3 .takeaway {
+    font-size: 15px;
     font-weight: 600;
+    color: var(--p3-ink);
+    border: 0;
+    padding: 0;
+    margin: 0 0 14px;
+    max-width: none;
 }
 
-/* Utility buttons (Reset zoom, Show all) */
-#p3-root .btn {
+#p3 .intro {
+    color: var(--p3-ink2);
+    margin: 0 0 14px;
+}
+
+#p3 .intro b {
+    color: var(--p3-ink);
+}
+
+#p3 .viz {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#p3 .viz-title {
+    font-size: 13px;
+    color: var(--p3-ink2);
+    margin-bottom: 6px;
+}
+
+/* controls (stacked vertically) */
+#p3 .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 8px 0 0;
+}
+
+#p3 .controls .row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+#p3 select {
+    max-width: 240px;
+}
+
+#p3 .controls label {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--p3-ink2);
+}
+
+#p3 select,
+#p3 .btn,
+#p3 .seg button,
+#p3 .legend button {
     font: inherit;
     font-size: 13px;
-    font-weight: 500;
-    color: var(--p3-ink);
-    background: var(--p3-card);
-    border: 1px solid var(--p3-line);
-    border-radius: 8px;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(31, 41, 51, 0.04);
+    font-weight: 400;
+    line-height: 1.4;
     text-decoration: none;
+    filter: none;
+    border: 1px solid var(--p3-line);
+    background: var(--p3-bg);
+    color: var(--p3-ink);
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 6px 10px;
 }
 
-#p3-root .btn:hover {
-    border-color: var(--p3-green);
-    color: var(--p3-green);
-    background: rgba(31, 111, 74, 0.05);
+#p3 select:hover,
+#p3 .btn:hover,
+#p3 .legend button:hover {
+    border-color: var(--p3-ink2);
     filter: none;
 }
 
-/* Summary callout */
-#p3-root #summary {
-    margin: 8px 0 14px;
-    padding: 10px 14px;
-    background: rgba(230, 159, 0, 0.08);
-    border-left: 3px solid var(--p3-gold);
-    border-radius: 0 8px 8px 0;
-    color: var(--p3-muted);
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-#p3-root #summary b {
-    color: var(--p3-ink);
-    font-weight: 600;
-}
-
-/* Chart card container */
-#p3-root #chart {
-    position: relative;
-    background: var(--p3-card);
+#p3 .seg {
+    display: inline-flex;
     border: 1px solid var(--p3-line);
-    border-radius: var(--radius, 10px);
-    padding: 16px 14px 12px;
-    box-shadow: 0 4px 18px rgba(31, 41, 51, 0.06);
+    border-radius: 6px;
+    overflow: hidden;
 }
 
-#p3-root svg {
-    display: block;
+#p3 .seg button {
+    border: 0;
+    border-radius: 0;
+    padding: 6px 12px;
+    color: var(--p3-ink2);
+}
+
+#p3 .seg button+button {
+    border-left: 1px solid var(--p3-line);
+}
+
+#p3 .seg button.on {
+    background: var(--p3-ink);
+    color: var(--p3-bg);
+}
+
+/* chart */
+#p3 .chart svg,
+#p3 .context svg {
     width: 100%;
     height: auto;
+    display: block;
     overflow: visible;
 }
 
-/* Axes & gridlines */
-#p3-root .axis text {
-    fill: var(--p3-muted);
-    font-size: 11px;
-    font-family: var(--font, system-ui, sans-serif);
+#p3 .context {
+    margin-top: 2px;
 }
 
-#p3-root .axis path,
-#p3-root .axis line {
+#p3 .hint {
+    font-size: 12px;
+    color: var(--p3-muted);
+    margin: 4px 0 0;
+}
+
+#p3 .axis text {
+    fill: var(--p3-ink2);
+    font-size: 12px;
+}
+
+#p3 .axis path,
+#p3 .axis line {
     stroke: var(--p3-line);
 }
 
-#p3-root .gridl line {
+#p3 .gridl line {
     stroke: var(--p3-line);
     stroke-dasharray: 2 3;
-    stroke-opacity: 0.7;
 }
 
-#p3-root .gridl path {
+#p3 .gridl path {
     display: none;
 }
 
-#p3-root .ylab {
-    fill: var(--p3-muted);
-    font-size: 11px;
-    font-family: var(--font, system-ui, sans-serif);
-}
-
-#p3-root .layer {
-    transition: opacity 0.2s ease;
-}
-
-/* D3 brush styles */
-#p3-root .selection {
-    fill: var(--p3-green);
-    fill-opacity: 0.16;
-    stroke: var(--p3-green);
-    stroke-width: 1.5px;
-}
-
-#p3-root .handle {
-    fill: var(--p3-green);
-    fill-opacity: 0.6;
-}
-
-/* Chart hover tooltip */
-#p3-root .tip {
-    position: absolute;
-    pointer-events: none;
-    background: rgba(31, 41, 51, 0.94);
-    backdrop-filter: blur(6px);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    padding: 9px 12px;
+#p3 .ylab {
+    fill: var(--p3-ink2);
     font-size: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    display: none;
-    min-width: 160px;
-    z-index: 10;
-    line-height: 1.5;
 }
 
-#p3-root .tip b {
-    color: #ffffff;
+#p3 .layer {
+    transition: opacity .15s;
 }
 
-#p3-root .tip .r {
+#p3 .layer.dim {
+    opacity: .15;
+}
+
+#p3 .selection {
+    fill: var(--c1);
+    fill-opacity: .15;
+    stroke: var(--c1);
+}
+
+#p3 .handle {
+    fill: var(--c1);
+    fill-opacity: .6;
+}
+
+/* legend pills */
+#p3 .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    margin: 10px 0 0;
+}
+
+#p3 .legend button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 14px;
+    padding: 3px 10px;
+}
+
+#p3 .legend button.off {
+    color: var(--p3-muted);
+    text-decoration: line-through;
+    opacity: 1;
+}
+
+#p3 .legend button.off i {
+    background: transparent !important;
+    border: 1.5px solid var(--p3-muted);
+}
+
+#p3 .legend i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* hover tooltip (element is appended to <body> by page3.js) */
+.p3-tip {
+    position: fixed;
+    pointer-events: none;
+    z-index: 60;
+    max-width: 280px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #1c1c1a;
+    color: #fbfaf7;
+    font: 12.5px/1.45 -apple-system, "Open Sans", "Segoe UI", Roboto, sans-serif;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+}
+
+.p3-tip .r {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     gap: 16px;
-    margin-top: 3px;
+    margin-top: 2px;
 }
 
-#p3-root .tip i {
+.p3-tip i {
     display: inline-block;
     width: 9px;
     height: 9px;
     border-radius: 2px;
     margin-right: 6px;
-    vertical-align: middle;
 }
 
-/* Interactive Legend */
-#p3-root #legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+@media (max-width: 900px) {
+    #p3.page {
+        grid-template-columns: 1fr;
+        padding: 32px 40px 32px 20px;
+        gap: 20px;
+    }
+
+    #p3 .text {
+        justify-self: start;
+    }
 }
 
-#p3-root #legend button {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    border: 1px solid var(--p3-line);
-    background: var(--p3-card);
-    color: var(--p3-ink);
-    border-radius: 99px;
-    padding: 4px 12px;
-    font: inherit;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    box-shadow: 0 1px 3px rgba(31, 41, 51, 0.04);
-}
-
-#p3-root #legend button:hover {
-    border-color: var(--p3-green);
-    transform: translateY(-1px);
-}
-
-#p3-root #legend button i {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-#p3-root #legend button.off {
-    opacity: 0.35;
-    text-decoration: line-through;
-    background: #f8f8f8;
-}
-
-#p3-root #legend button.focus {
-    outline: 2px solid var(--p3-green);
-    outline-offset: 1px;
-    border-color: var(--p3-green);
-    background: rgba(31, 111, 74, 0.06);
+/* no "next slide" arrow button on this page (main.js adds it under every page) */
+#p3 .next {
+    display: none;
 }

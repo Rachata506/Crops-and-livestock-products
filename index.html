@@ -16,8 +16,6 @@
   <!-- Page 3 data fallback (window.CLEAN_CSV). Must contain the NEW page3_data format. "defer" keeps the 3 MB file from blocking the page. -->
   <script src="./cleaned_data.js" defer></script>
   <script type="module" src="./js/main.js"></script>
-  <!-- Page 3 is a classic (non-module) script. REMOVE this line if main.js already loads page3.js. -->
-  <script src="./page3.js" defer></script>
 </head>
 
 <body>
@@ -36,40 +34,21 @@
     <section id="p2" class="page" data-title="World Map">
       <header>
         <h2>Where is food produced?</h2>
-        <p class="takeaway" id="p2-takeaway">Takeaway: …</p>
       </header>
       <div id="p2-root"></div>
     </section>
 
     <section id="p3" class="page" data-title="Trends">
-      <header>
+      <header class="text">
         <h2>How has production changed since 1961?</h2>
-        <p class="takeaway" id="p3-takeaway">Takeaway: …</p>
       </header>
-      <div id="p3-root">
-        <p class="sub">Annual production in million tonnes · FAOSTAT crops and livestock products</p>
-
-        <div class="controls">
-          <div class="seg" id="viewSeg"><button data-v="crop" class="on">By crop</button><button data-v="group">By
-              group</button><button data-v="region">By region</button></div>
-          <label id="itemWrap" style="display:none">Item: <select id="itemSel"></select></label>
-          <div class="seg" id="modeSeg"><button data-m="area" class="on">Stacked area</button><button
-              data-m="line">Lines</button></div>
-          <button class="btn" id="reset">Reset zoom</button>
-          <button class="btn" id="showAll">Show all series</button>
-        </div>
-        <div id="summary"></div>
-        <div id="chart">
-          <div class="tip" id="tip"></div>
-        </div>
-        <div id="legend"></div>
-      </div>
+      <div id="p3-root" class="viz"></div>
     </section>
 
     <section id="p4" class="page" data-title="Top Producers">
       <header>
         <h2>Who leads, and has that changed?</h2>
-        <p class="takeaway" id="p4-takeaway">Takeaway: …</p>
+
       </header>
       <div id="p4-root"></div>
     </section>
@@ -77,7 +56,6 @@
     <section id="p5" class="page" data-title="Land vs Yield">
       <header>
         <h2>Did growth come from more land or higher yield?</h2>
-        <p class="takeaway" id="p5-takeaway">Takeaway: …</p>
       </header>
       <div id="p5-root"></div>
     </section>
@@ -85,7 +63,6 @@
     <section id="p6" class="page" data-title="Country Compare" aria-labelledby="p6-title">
       <header>
         <h2 id="p6-title">How does my country compare?</h2>
-        <p class="takeaway" id="p6-takeaway">Takeaway: …</p>
       </header>
       <div id="p6-root"></div>
     </section>
