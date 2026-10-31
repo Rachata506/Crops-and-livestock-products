@@ -448,10 +448,11 @@ export async function init(data, root) {
       const chartModule = await import(
         'https://cdn.jsdelivr.net/npm/chart.js@4.4.8/+esm'
       );
+      chartModule.Chart.register(...chartModule.registerables);
       window.Chart = chartModule.Chart;
     }
 
-    const response = await fetch('./data_page5/agriculture.json');
+    const response = await fetch('/data_page5/agriculture.json');
 
     if (!response.ok) {
       throw new Error(
