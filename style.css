@@ -108,7 +108,7 @@ body {
 
 /* sections: full-height slides */
 .page {
-    padding: 56px 24px;
+    padding: 56px 72px 56px 24px;
     min-height: 100vh;
     background: #ffffff;
     display: flex;
@@ -119,7 +119,7 @@ body {
 }
 
 .page>* {
-    max-width: 1060px;
+    max-width: 1400px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
