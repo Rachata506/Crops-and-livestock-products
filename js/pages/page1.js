@@ -1,3 +1,4 @@
+
 export async function init(data, root) {
     root.innerHTML = "";
   
@@ -11,34 +12,34 @@ export async function init(data, root) {
         color: var(--ink);
         background: #fff;
         min-height: 100vh;
-        padding: 60px 5% 80px;
+        padding: 35px 3% 65px;
         box-sizing: border-box;
       }
   
-      #p1 * { box-sizing: border-box; }
+      #p1 * {
+        box-sizing: border-box;
+      }
   
       #p1 .layout {
         display: grid;
-        grid-template-columns: 1fr 1.1fr;
-        gap: 7%;
-        max-width: 1250px;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+        gap: 5%;
+        width: 100%;
+        max-width: 1450px;
         margin: 0 auto;
-        align-items: center;
+        align-items: start;
       }
   
-      #p1 .eyebrow {
-        color: var(--green);
-        font-size: 12px;
-        letter-spacing: 5px;
-        font-weight: 700;
-        margin-bottom: 30px;
+      #p1 .intro {
+        padding-top: 15px;
+        min-width: 0;
       }
   
       #p1 h1 {
-        font-size: clamp(55px, 6vw, 95px);
-        line-height: 1.05;
+        font-size: clamp(55px, 5.8vw, 90px);
+        line-height: 1.06;
         font-weight: 400;
-        letter-spacing: -5px;
+        letter-spacing: -4px;
         margin: 0 0 25px;
       }
   
@@ -60,24 +61,15 @@ export async function init(data, root) {
         line-height: 1.8;
         color: #414941;
         max-width: 540px;
-        margin-bottom: 35px;
-      }
-  
-      #p1 .start {
-        background: var(--green);
-        color: white;
-        border: none;
-        padding: 18px 27px;
-        border-radius: 9px;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
+        margin: 0;
       }
   
       #p1 .charts {
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 24px;
+        min-width: 0;
+        width: 100%;
       }
   
       #p1 .chart-card {
@@ -85,6 +77,7 @@ export async function init(data, root) {
         border-radius: 18px;
         padding: 24px;
         background: white;
+        width: 100%;
       }
   
       #p1 .chart-head {
@@ -111,6 +104,7 @@ export async function init(data, root) {
         font-weight: 700;
         color: var(--green);
         text-align: right;
+        white-space: nowrap;
       }
   
       #p1 .chart-year {
@@ -154,11 +148,30 @@ export async function init(data, root) {
       }
   
       @media (max-width: 850px) {
-        #p1 { padding: 35px 6% 70px; }
-        #p1 .layout { grid-template-columns: 1fr; gap: 50px; }
-        #p1 h1 { letter-spacing: -3px; }
+        #p1 {
+          padding: 30px 5% 65px;
+        }
+  
+        #p1 .layout {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+  
+        #p1 .intro {
+          padding-top: 0;
+        }
+  
+        #p1 h1 {
+          font-size: clamp(48px, 9vw, 75px);
+          letter-spacing: -3px;
+        }
+  
+        #p1 .description {
+          font-size: 17px;
+        }
       }
     `;
+  
     root.appendChild(style);
   
     const page = document.createElement("section");
@@ -167,63 +180,89 @@ export async function init(data, root) {
     page.innerHTML = `
       <div class="layout">
         <div class="intro">
-          <div class="eyebrow">GLOBAL AGRICULTURAL DASHBOARD</div>
           <h1>Crops &<br>Livestock<br>Products</h1>
+  
           <div class="subtitle">
             An exploration of global agricultural production
           </div>
+  
           <div class="line"></div>
+  
           <p class="description">
             How has agricultural production changed around the world
             since 1961, and what drives the differences between
             countries? Does growth come from more land or higher yield?
           </p>
-          <button class="start" id="p1-start">
-            ▶ &nbsp; Start Exploring
-          </button>
         </div>
   
         <div class="charts">
           <div class="chart-card">
             <div class="chart-head">
               <div>
-                <div class="chart-title">Global Production Index</div>
-                <div class="chart-note">Cereals, primary · 1961 = 100</div>
+                <div class="chart-title">
+                  Global Production Index
+                </div>
+                <div class="chart-note">
+                  Cereals, primary · 1961 = 100
+                </div>
               </div>
+  
               <div>
-                <div class="chart-value" id="p1-production-value">—</div>
-                <div class="chart-year" id="p1-production-year">Loading...</div>
+                <div class="chart-value"
+                     id="p1-production-value">—</div>
+                <div class="chart-year"
+                     id="p1-production-year">Loading...</div>
               </div>
             </div>
-            <svg class="chart-svg" id="p1-production-chart"></svg>
+  
+            <svg class="chart-svg"
+                 id="p1-production-chart"></svg>
           </div>
   
           <div class="chart-card">
             <div class="chart-head">
               <div>
-                <div class="chart-title">Global Harvested Area</div>
-                <div class="chart-note">Cereals, primary · million hectares</div>
+                <div class="chart-title">
+                  Global Harvested Area
+                </div>
+                <div class="chart-note">
+                  Cereals, primary · million hectares
+                </div>
               </div>
+  
               <div>
-                <div class="chart-value" id="p1-area-value">—</div>
-                <div class="chart-year" id="p1-area-year">Loading...</div>
+                <div class="chart-value"
+                     id="p1-area-value">—</div>
+                <div class="chart-year"
+                     id="p1-area-year">Loading...</div>
               </div>
             </div>
-            <svg class="chart-svg" id="p1-area-chart"></svg>
+  
+            <svg class="chart-svg"
+                 id="p1-area-chart"></svg>
           </div>
   
           <div class="chart-card">
             <div class="chart-head">
               <div>
-                <div class="chart-title">Global Yield</div>
-                <div class="chart-note">Cereals, primary · tonnes per hectare</div>
+                <div class="chart-title">
+                  Global Yield
+                </div>
+                <div class="chart-note">
+                  Cereals, primary · tonnes per hectare
+                </div>
               </div>
+  
               <div>
-                <div class="chart-value" id="p1-yield-value">—</div>
-                <div class="chart-year" id="p1-yield-year">Loading...</div>
+                <div class="chart-value"
+                     id="p1-yield-value">—</div>
+                <div class="chart-year"
+                     id="p1-yield-year">Loading...</div>
               </div>
             </div>
-            <svg class="chart-svg" id="p1-yield-chart"></svg>
+  
+            <svg class="chart-svg"
+                 id="p1-yield-chart"></svg>
           </div>
         </div>
       </div>
@@ -235,9 +274,11 @@ export async function init(data, root) {
   
     function svgElement(tag, attributes = {}) {
       const el = document.createElementNS(NS, tag);
+  
       for (const [key, value] of Object.entries(attributes)) {
         el.setAttribute(key, String(value));
       }
+  
       return el;
     }
   
@@ -251,8 +292,15 @@ export async function init(data, root) {
       const top = 10;
       const bottom = 25;
   
-      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-      svg.setAttribute("preserveAspectRatio", "none");
+      svg.setAttribute(
+        "viewBox",
+        `0 0 ${width} ${height}`
+      );
+  
+      svg.setAttribute(
+        "preserveAspectRatio",
+        "none"
+      );
   
       if (!points.length) return;
   
@@ -265,7 +313,8 @@ export async function init(data, root) {
       const minValue = 0;
   
       const x = year =>
-        left + ((year - minYear) / (maxYear - minYear || 1)) *
+        left +
+        ((year - minYear) / (maxYear - minYear || 1)) *
         (width - left - right);
   
       const y = value =>
@@ -274,49 +323,69 @@ export async function init(data, root) {
         (height - top - bottom);
   
       for (let i = 0; i <= 3; i++) {
-        const gy = top + i * (height - top - bottom) / 3;
-        svg.appendChild(svgElement("line", {
-          x1: left, y1: gy, x2: width - right, y2: gy,
-          class: "chart-grid"
-        }));
+        const gy =
+          top + i * (height - top - bottom) / 3;
+  
+        svg.appendChild(
+          svgElement("line", {
+            x1: left,
+            y1: gy,
+            x2: width - right,
+            y2: gy,
+            class: "chart-grid"
+          })
+        );
       }
   
-      const path = points.map((p, i) =>
-        `${i === 0 ? "M" : "L"} ${x(p.year)} ${y(p.value)}`
-      ).join(" ");
+      const path = points
+        .map((p, i) =>
+          `${i === 0 ? "M" : "L"} ${x(p.year)} ${y(p.value)}`
+        )
+        .join(" ");
   
       const areaPath =
         path +
         ` L ${x(points[points.length - 1].year)} ${height - bottom}` +
         ` L ${x(points[0].year)} ${height - bottom} Z`;
   
-      svg.appendChild(svgElement("path", {
-        d: areaPath,
-        fill: options.fill || "rgba(23,97,60,0.09)"
-      }));
+      svg.appendChild(
+        svgElement("path", {
+          d: areaPath,
+          fill: options.fill || "rgba(23,97,60,0.09)"
+        })
+      );
   
-      svg.appendChild(svgElement("path", {
-        d: path,
-        fill: "none",
-        stroke: options.color || "#17613c",
-        "stroke-width": 3,
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round",
-        "vector-effect": "non-scaling-stroke"
-      }));
+      svg.appendChild(
+        svgElement("path", {
+          d: path,
+          fill: "none",
+          stroke: options.color || "#17613c",
+          "stroke-width": 3,
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+          "vector-effect": "non-scaling-stroke"
+        })
+      );
   
-      const ticks = [...new Set([
-        minYear, 1980, 2000, maxYear
-      ])].filter(year => year >= minYear && year <= maxYear);
+      const ticks = [
+        ...new Set([minYear, 1980, 2000, maxYear])
+      ].filter(
+        year => year >= minYear && year <= maxYear
+      );
   
       for (const year of ticks) {
         const label = svgElement("text", {
           x: x(year),
           y: height - 5,
-          "text-anchor": year === minYear ? "start" :
-            year === maxYear ? "end" : "middle",
+          "text-anchor":
+            year === minYear
+              ? "start"
+              : year === maxYear
+                ? "end"
+                : "middle",
           class: "chart-axis"
         });
+  
         label.textContent = year;
         svg.appendChild(label);
       }
@@ -337,36 +406,71 @@ export async function init(data, root) {
       svg.appendChild(hoverLine);
       svg.appendChild(hoverDot);
   
-      const valueEl = page.querySelector(options.valueSelector);
-      const yearEl = page.querySelector(options.yearSelector);
+      const valueEl = page.querySelector(
+        options.valueSelector
+      );
+  
+      const yearEl = page.querySelector(
+        options.yearSelector
+      );
   
       function update(index, showMarker) {
         const point = points[index];
-        valueEl.textContent = options.format(point.value);
+  
+        valueEl.textContent = options.format(
+          point.value
+        );
+  
         yearEl.textContent = `As of ${point.year}`;
   
-        hoverLine.setAttribute("x1", x(point.year));
-        hoverLine.setAttribute("x2", x(point.year));
-        hoverDot.setAttribute("cx", x(point.year));
-        hoverDot.setAttribute("cy", y(point.value));
+        hoverLine.setAttribute(
+          "x1",
+          x(point.year)
+        );
   
-        hoverLine.setAttribute("visibility",
-          showMarker ? "visible" : "hidden");
-        hoverDot.setAttribute("visibility",
-          showMarker ? "visible" : "hidden");
+        hoverLine.setAttribute(
+          "x2",
+          x(point.year)
+        );
+  
+        hoverDot.setAttribute(
+          "cx",
+          x(point.year)
+        );
+  
+        hoverDot.setAttribute(
+          "cy",
+          y(point.value)
+        );
+  
+        hoverLine.setAttribute(
+          "visibility",
+          showMarker ? "visible" : "hidden"
+        );
+  
+        hoverDot.setAttribute(
+          "visibility",
+          showMarker ? "visible" : "hidden"
+        );
       }
   
       update(points.length - 1, false);
   
       svg.addEventListener("pointermove", event => {
         const rect = svg.getBoundingClientRect();
-        const mouseX = (event.clientX - rect.left) / rect.width * width;
+  
+        const mouseX =
+          (event.clientX - rect.left) /
+          rect.width * width;
   
         let closest = 0;
         let smallestDistance = Infinity;
   
         points.forEach((point, index) => {
-          const distance = Math.abs(x(point.year) - mouseX);
+          const distance = Math.abs(
+            x(point.year) - mouseX
+          );
+  
           if (distance < smallestDistance) {
             smallestDistance = distance;
             closest = index;
@@ -382,18 +486,30 @@ export async function init(data, root) {
     }
   
     try {
-      const response = await fetch("/data_page5/agriculture.json");
+      const response = await fetch(
+        "/data_page5/agriculture.json"
+      );
+  
       if (!response.ok) {
-        throw new Error(`Cannot load data: HTTP ${response.status}`);
+        throw new Error(
+          `Cannot load data: HTTP ${response.status}`
+        );
       }
   
       const dataset = await response.json();
   
-      const worldIndex = dataset.areas.indexOf("World");
-      const cerealIndex = dataset.items.indexOf("Cereals, primary");
+      const worldIndex = dataset.areas.indexOf(
+        "World"
+      );
+  
+      const cerealIndex = dataset.items.indexOf(
+        "Cereals, primary"
+      );
   
       if (worldIndex === -1 || cerealIndex === -1) {
-        throw new Error("World or Cereals, primary not found in dataset");
+        throw new Error(
+          "World or Cereals, primary not found in dataset"
+        );
       }
   
       const records = dataset.records
@@ -407,7 +523,10 @@ export async function init(data, root) {
   
       const production = records
         .filter(row => Number.isFinite(row[4]))
-        .map(row => ({ year: row[1], value: row[4] }));
+        .map(row => ({
+          year: row[1],
+          value: row[4]
+        }));
   
       const area = records
         .filter(row => Number.isFinite(row[3]))
@@ -423,24 +542,37 @@ export async function init(data, root) {
           value: row[5] / 1000
         }));
   
-      if (!production.length || !area.length || !yieldData.length) {
-        throw new Error("No usable cereal data found");
+      if (
+        !production.length ||
+        !area.length ||
+        !yieldData.length
+      ) {
+        throw new Error(
+          "No usable cereal data found"
+        );
       }
   
-      const baseProduction =
-        production.find(p => p.year === 1961)?.value;
+      const baseProduction = production.find(
+        p => p.year === 1961
+      )?.value;
   
       if (!baseProduction) {
-        throw new Error("1961 production baseline not available");
+        throw new Error(
+          "1961 production baseline not available"
+        );
       }
   
-      const productionIndex = production.map(p => ({
-        year: p.year,
-        value: p.value / baseProduction * 100
-      }));
+      const productionIndex = production.map(
+        p => ({
+          year: p.year,
+          value: p.value / baseProduction * 100
+        })
+      );
   
-      drawChart(page.querySelector("#p1-production-chart"),
-        productionIndex, {
+      drawChart(
+        page.querySelector("#p1-production-chart"),
+        productionIndex,
+        {
           valueSelector: "#p1-production-value",
           yearSelector: "#p1-production-year",
           format: value => value.toFixed(1),
@@ -448,22 +580,28 @@ export async function init(data, root) {
         }
       );
   
-      drawChart(page.querySelector("#p1-area-chart"),
-        area, {
+      drawChart(
+        page.querySelector("#p1-area-chart"),
+        area,
+        {
           valueSelector: "#p1-area-value",
           yearSelector: "#p1-area-year",
-          format: value => value.toLocaleString("en-US", {
-            maximumFractionDigits: 0
-          }) + " Mha",
+          format: value =>
+            value.toLocaleString("en-US", {
+              maximumFractionDigits: 0
+            }) + " Mha",
           color: "#238550"
         }
       );
   
-      drawChart(page.querySelector("#p1-yield-chart"),
-        yieldData, {
+      drawChart(
+        page.querySelector("#p1-yield-chart"),
+        yieldData,
+        {
           valueSelector: "#p1-yield-value",
           yearSelector: "#p1-yield-year",
-          format: value => value.toFixed(2) + " t/ha",
+          format: value =>
+            value.toFixed(2) + " t/ha",
           color: "#53ad78"
         }
       );
@@ -480,16 +618,5 @@ export async function init(data, root) {
           "Data unavailable";
       }
     }
-  
-    page.querySelector("#p1-start").addEventListener("click", () => {
-      const nav = document.querySelector(
-        '[data-page="2"], [data-page="page2"], a[href="#page2"]'
-      );
-  
-      if (nav) {
-        nav.click();
-      } else {
-        window.location.hash = "#page2";
-      }
-    });
   }
+  
