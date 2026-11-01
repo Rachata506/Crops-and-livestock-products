@@ -71,9 +71,10 @@ export async function init(_sharedData, root) {
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   root.innerHTML = `
     <div class="p4-dashboard">
-      <p class="p4-intro">Compare the leading producers of one crop, then explore their production history and location. Rankings use production quantity, not exports or yield.</p>
-      <div class="p4-loading" role="status">Loading global crop production from data/data.csv…</div>
-      <div class="p4-content" hidden>
+      <div class="pl">
+        <p class="p4-intro">Compare the leading producers of one crop, then explore their production history and location. Rankings use production quantity, not exports or yield.</p>
+        <div class="p4-loading" role="status">Loading global crop production from data/data.csv…</div>
+        <div class="p4-content" hidden>
         <div class="p4-controls">
           <label class="p4-crop-field">Crop / Product<select data-p4="crop" aria-label="Crop or product"></select></label>
           <label>Ranking<select data-p4="top" aria-label="Number of top producers"><option value="5">Top 5</option><option value="10" selected>Top 10</option><option value="15">Top 15</option></select></label>
@@ -83,10 +84,15 @@ export async function init(_sharedData, root) {
           <label>Year <output class="p4-year" data-p4="year"></output><input type="range" data-p4="slider" aria-label="Production year" step="1"><span class="p4-time-ends"><span data-p4="first-year"></span><span data-p4="last-year"></span></span></label>
           <span class="p4-status" data-p4="status">Paused</span>
         </div>
+        <p class="p4-takeaway" data-p4="takeaway" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="pr p4-content" hidden>
         <div class="p4-subtitle" data-p4="bar-title"></div>
         <div class="p4-subtitle" data-p4="coverage"></div>
         <div class="p4-bar-chart" data-p4="bars"></div>
-        <p class="p4-takeaway" data-p4="takeaway" aria-live="polite"></p>
+      </div>
+      <div class="pw p4-content" hidden>
         <details>
           <summary>Exact values and changes in rank</summary>
           <div class="p4-table-wrap"><table><caption class="p4-note" data-p4="table-title"></caption><thead><tr><th scope="col">Rank</th><th scope="col">Country / area</th><th scope="col" class="p4-number">Production (tonnes)</th><th scope="col" class="p4-number">Rank vs. previous year</th></tr></thead><tbody data-p4="table"></tbody></table></div>
@@ -112,7 +118,7 @@ export async function init(_sharedData, root) {
       </div>
     </div>`;
   const q = name => root.querySelector(`[data-p4="${name}"]`);
-  const content = root.querySelector('.p4-content');
+  const contents = [...root.querySelectorAll('.p4-content')];
   const loading = root.querySelector('.p4-loading');
   function stop() {
     clearInterval(timer); timer = null;
@@ -290,11 +296,13 @@ export async function init(_sharedData, root) {
     cancelAnimationFrame(resizeFrame);
     resizeFrame = requestAnimationFrame(() => draw(false));
   });
-  const api = { destroy() {
-    disposed = true; stop(); abort.abort(); resize.disconnect(); observer.disconnect(); cancelAnimationFrame(resizeFrame);
-    document.removeEventListener('visibilitychange', onVisibility); root.removeEventListener('keydown', onControlKey); root.replaceChildren();
-    if (root.__page4 === api) delete root.__page4;
-  } };
+  const api = {
+    destroy() {
+      disposed = true; stop(); abort.abort(); resize.disconnect(); observer.disconnect(); cancelAnimationFrame(resizeFrame);
+      document.removeEventListener('visibilitychange', onVisibility); root.removeEventListener('keydown', onControlKey); root.replaceChildren();
+      if (root.__page4 === api) delete root.__page4;
+    }
+  };
   root.__page4 = api;
   try {
     const mapPromise = d3.json(MAP_URL, { signal: abort.signal }).then(world => {
@@ -314,7 +322,7 @@ export async function init(_sharedData, root) {
     q('crop').value = cropNames.includes(state.crop) ? state.crop : cropNames[0];
     const years = [...prepared.crops.values()].flatMap(byYear => [...byYear.keys()]);
     q('source').textContent = `Source: FAOSTAT-derived data/data.csv · ${format.format(prepared.records)} production observations · ${prepared.countries.size} countries/areas · ${cropNames.length} crops/products · ${d3.min(years)}–${d3.max(years)}. Missing values are not treated as zero. Tied quantities are ordered alphabetically. Production quantity does not establish export leadership, farming efficiency or weather causation.`;
-    loading.hidden = true; content.hidden = false;
+    loading.hidden = true; contents.forEach(c => { c.hidden = false; });
     selectCrop();
     q('crop').addEventListener('change', selectCrop);
     q('top').addEventListener('change', () => { stop(); state.top = Number(q('top').value); hidden.clear(); pinned = false; draw(false); });

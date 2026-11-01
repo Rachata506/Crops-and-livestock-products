@@ -25,35 +25,56 @@ export function mountFoodMap(container, dataUrl) {
   const base = dataUrl.replace(/\/$/, '');
   root.html(`
     <style>
-      .food-map-page{box-sizing:border-box;width:100%;min-height:100svh;background:#f5f5ed;color:#183d36;padding:30px clamp(16px,4vw,64px);font-family:Arial,sans-serif;position:relative}
-      .food-map-page *{box-sizing:border-box}.food-map-page .fm-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
-      .food-map-page h2{font:normal clamp(28px,3.2vw,48px) Georgia,serif;margin:0}.food-map-page h2 em{color:#62854e}
-      .food-map-page .fm-controls{display:flex;gap:20px;flex-wrap:wrap;padding:15px 0;border-block:1px solid #d6dfd2}.food-map-page label{display:grid;gap:8px;font-size:10px;letter-spacing:1px}
-      .food-map-page select{max-width:min(390px,85vw);padding:7px 28px 7px 9px;border:1px solid #cbd7c7;border-radius:5px;background:#fafbf5;color:#183d36;font-size:14px}
-      .food-map-page .fm-hint{margin-left:auto;font-size:12px;color:#6e806c;align-self:center}.food-map-page .fm-status{font-size:12px;min-height:18px;color:#65785e;margin:13px 0 0}
-      .food-map-page .fm-map{width:100%;height:clamp(320px,57vh,650px);display:block;touch-action:none;cursor:grab}
-      .food-map-page .fm-time{width:100%;border-top:1px solid #d6dfd2;padding-top:15px}.food-map-page .fm-time-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:8px}.food-map-page .fm-year-readout{display:flex;align-items:baseline;gap:24px}.food-map-page button{width:40px;height:40px;border:0;border-radius:50%;background:#245541;color:white;cursor:pointer}.food-map-page button:disabled{opacity:.4;cursor:wait}
-      .food-map-page input{width:100%;accent-color:#416b42}.food-map-page .fm-slider-track{width:1060px;max-width:100%;margin:0 auto}.food-map-page .fm-slider{display:block;width:100%;height:16px;margin:0;padding:0}.food-map-page .fm-slider::-webkit-slider-runnable-track{width:100%}.food-map-page .fm-slider::-moz-range-track{width:100%}.food-map-page .fm-year{font-size:24px;font-weight:bold}.food-map-page .fm-footer{font-size:10px;color:#718069;margin-top:17px;line-height:1.7}
-      .fm-tooltip{position:fixed;z-index:9999;pointer-events:none;background:#173e34;color:white;border-radius:7px;padding:12px 15px;font-size:12px;line-height:1.8;max-width:280px;white-space:pre-line;box-shadow:0 4px 20px #0002}.food-map-page .fm-country:focus{outline:none}
-      @media(max-width:650px){.food-map-page .fm-hint{display:none}.food-map-page .fm-head{display:block}.food-map-page .fm-controls{gap:12px}.food-map-page select{font-size:12px}.food-map-page .fm-map{height:400px}}
+            /* Page 2. Layout comes from the shared split grid in style.css (.pl = left, .pr = right). */
+      #p2 .pl { font-size: 17px; }
+      #p2 .fm-controls { display: flex; flex-direction: column; align-items: stretch; gap: 18px; margin: 8px 0 18px; }
+      #p2 label { display: grid; gap: 8px; font-size: 15px; font-weight: 600; letter-spacing: .06em; color: var(--ink2); }
+      #p2 select { width: 100%; max-width: 380px; padding: 10px 14px; font-size: 17px; letter-spacing: 0; }
+      #p2 select:disabled { opacity: .55; cursor: wait; }
+      #p2 .fm-hint { font-size: 16px; color: var(--faint); }
+      #p2 .fm-status { font-size: 18px; font-weight: 600; min-height: 22px; color: var(--ink); margin: 0; padding-left: 14px; border-left: 3px solid var(--gold); }
+
+      #p2 .fm-map { width: 100%; height: clamp(300px, 56vh, 620px); display: block; touch-action: none; cursor: grab; }
+      #p2 .fm-map:active { cursor: grabbing; }
+
+      #p2 .fm-time { width: 100%; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 6px; }
+      #p2 .fm-time-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+      #p2 .fm-year-readout { display: flex; align-items: baseline; gap: 12px; font-size: 16px; color: var(--ink2); letter-spacing: .06em; }
+      #p2 .fm-year { font: 700 32px/1.1 var(--font); color: var(--ink); letter-spacing: 0; }
+      #p2 .fm-play { width: 48px; height: 38px; padding: 0; border: 1px solid var(--ink); border-radius: 6px; background: var(--ink); color: var(--bg); font-size: 15px; }
+      #p2 .fm-play:hover:not(:disabled) { filter: brightness(1.25); }
+      #p2 .fm-play:disabled { opacity: .45; cursor: wait; }
+      #p2 input { width: 100%; }
+      #p2 .fm-slider-track { width: 100%; margin: 0; }
+      #p2 .fm-slider { display: block; width: 100%; height: 16px; margin: 0; padding: 0; }
+      #p2 .fm-country:focus { outline: none; }
+
+      /* Page 2 only: globe on the LEFT, title + controls on the RIGHT (desktop). Phones keep the single-column order. */
+      @media (min-width: 1001px) {
+        #p2.page:has(> header) { grid-template-columns: 8fr minmax(340px, 4fr); }
+        #p2.page:has(> header) > header { grid-column: 2; justify-self: start; max-width: 420px; }
+        #p2 .pl { grid-column: 2; justify-self: start; max-width: 420px; }
+        #p2 .pr { grid-column: 1; }
+      }
+
+      .fm-tooltip { position: fixed; z-index: 9999; pointer-events: none; background: var(--ink); color: var(--bg); border-radius: 6px; padding: 10px 12px; font: 13px/1.6 var(--font); max-width: 280px; white-space: pre-line; box-shadow: 0 4px 14px rgba(0,0,0,.25); }color: var(--bg); border-radius: 6px; padding: 10px 12px; font: 13px/1.6 var(--font); max-width: 280px; white-space: pre-line; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
     </style>
-    <div class="fm-head"><div><h2>Where is food <em>produced?</em></h2></div></div>
-    <div class="fm-controls">
+    <div class="pl"><div class="fm-controls">
       <label>AGRICULTURAL ITEM<select class="fm-item" aria-label="Agricultural item" disabled></select></label>
       <label>MEASURE<select class="fm-measure" aria-label="Measure" disabled></select></label>
       <label>VIEW<select class="fm-view" aria-label="Map view"><option value="globe">Globe</option><option value="flat">World map</option></select></label>
       <span class="fm-hint">Drag to rotate · Hover or focus a country for values</span>
     </div>
-    <p class="fm-status" role="status" aria-live="polite">Loading data…</p>
-    <svg class="fm-map" viewBox="0 0 1000 560" role="group" aria-label="World agricultural production map"></svg>
-    <div class="fm-time"><div class="fm-time-head"><div class="fm-year-readout"><span>YEAR </span><output class="fm-year"></output></div><button class="fm-play" aria-label="Play years" disabled>▶</button></div><div class="fm-slider-track"><input class="fm-slider" type="range" aria-label="Year" disabled></div></div>
+    <p class="fm-status" role="status" aria-live="polite">Loading data…</p></div>
+    <div class="pr"><svg class="fm-map" viewBox="0 0 1000 560" role="group" aria-label="World agricultural production map"></svg>
+    <div class="fm-time"><div class="fm-time-head"><div class="fm-year-readout"><span>YEAR </span><output class="fm-year"></output></div><button class="fm-play" aria-label="Play years" disabled>▶</button></div><div class="fm-slider-track"><input class="fm-slider" type="range" aria-label="Year" disabled></div></div></div>
   `);
   const el = name => root.select(`.fm-${name}`);
   const svg = el('map');
-  el('slider').style('width', '1060px').style('height', '16px').style('max-width', '100%');
+  el('slider').style('width', '100%').style('height', '16px');
   const tip = d3.select(document.body).append('div').attr('class', 'fm-tooltip').attr('hidden', true);
-  const sphere = svg.append('path').datum({ type: 'Sphere' }).attr('fill', '#e5ece3').attr('stroke', '#c9d6c4');
-  const grid = svg.append('path').datum(d3.geoGraticule10()).attr('fill', 'none').attr('stroke', '#d1ddcc').attr('stroke-width', .5);
+  const sphere = svg.append('path').datum({ type: 'Sphere' }).attr('fill', '#f1efe8').attr('stroke', '#e6e3dc');
+  const grid = svg.append('path').datum(d3.geoGraticule10()).attr('fill', 'none').attr('stroke', '#e6e3dc').attr('stroke-width', .5);
   const layer = svg.append('g');
   const fetchJson = async path => {
     const response = await fetch(path, { signal: abort.signal });
@@ -105,7 +126,7 @@ export function mountFoodMap(container, dataUrl) {
     unit = meta.units[unitIndex] || '';
     maximum = d3.max(series, r => r[3]) || 1;
     const color = d3.scaleSequentialSqrt(d3.interpolateYlGn).domain([0, maximum]);
-    layer.selectAll('path').attr('fill', f => values.has(key(f)) ? color(values.get(key(f))[3]) : '#d5ddd1')
+    layer.selectAll('path').attr('fill', f => values.has(key(f)) ? color(values.get(key(f))[3]) : '#e0ddd3')
       .attr('aria-label', f => `${meta.areas[key(f)] || f.properties.name}: ${values.has(key(f)) ? number(values.get(key(f))[3]) + ' ' + unit : 'No data'}`);
     el('year').text(year);
     const count = countries.filter(f => values.has(key(f))).length;
@@ -119,7 +140,7 @@ export function mountFoodMap(container, dataUrl) {
     el('status').text(`Loading ${currentItem.name}…`);
     el('slider').property('disabled', true); el('play').property('disabled', true);
     el('measure').property('disabled', true);
-    layer.selectAll('path').attr('fill', '#d5ddd1'); tip.attr('hidden', true);
+    layer.selectAll('path').attr('fill', '#e0ddd3'); tip.attr('hidden', true);
     try {
       let next = cache.get(currentItem.id);
       if (!next) {
@@ -167,9 +188,9 @@ export function mountFoodMap(container, dataUrl) {
     meta = manifest;
     countries = feature(world, world.objects.countries).features.filter(f => key(f) !== '010');
     const paths = layer.selectAll('path').data(countries).join('path').attr('class', 'fm-country')
-      .attr('stroke', '#f7f7ee').attr('stroke-width', .6).attr('tabindex', 0).attr('role', 'img');
+      .attr('stroke', '#fbfaf7').attr('stroke-width', .6).attr('tabindex', 0).attr('role', 'img');
     const setHighlight = (event, active) => d3.select(event.currentTarget)
-      .attr('stroke', active ? '#245541' : '#f7f7ee')
+      .attr('stroke', active ? '#1c1c1a' : '#fbfaf7')
       .attr('stroke-width', active ? 1.8 : .6);
     paths.on('pointerenter', (e, f) => { setHighlight(e, true); showTooltip(e, f); })
       .on('pointermove', (e, f) => showTooltip(e, f))
