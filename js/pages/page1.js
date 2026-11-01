@@ -10,15 +10,13 @@ export async function init(data, root) {
         --muted: #607067;
         font-family: Arial, Helvetica, sans-serif;
         color: var(--ink);
-        background: #fff;
+        background: white;
         min-height: 100vh;
         padding: 35px 3% 65px;
         box-sizing: border-box;
       }
   
-      #p1 * {
-        box-sizing: border-box;
-      }
+      #p1 * { box-sizing: border-box; }
   
       #p1 .layout {
         display: grid;
@@ -73,7 +71,7 @@ export async function init(data, root) {
       }
   
       #p1 .chart-card {
-        border: 1px solid #dce8df;
+        border: 1px solid #dce9df;
         border-radius: 18px;
         padding: 24px;
         background: white;
@@ -148,27 +146,17 @@ export async function init(data, root) {
       }
   
       @media (max-width: 850px) {
-        #p1 {
-          padding: 30px 5% 65px;
-        }
-  
+        #p1 { padding: 30px 5% 65px; }
         #p1 .layout {
           grid-template-columns: 1fr;
           gap: 40px;
         }
-  
-        #p1 .intro {
-          padding-top: 0;
-        }
-  
+        #p1 .intro { padding-top: 0; }
         #p1 h1 {
           font-size: clamp(48px, 9vw, 75px);
           letter-spacing: -3px;
         }
-  
-        #p1 .description {
-          font-size: 17px;
-        }
+        #p1 .description { font-size: 17px; }
       }
     `;
   
@@ -176,6 +164,24 @@ export async function init(data, root) {
   
     const page = document.createElement("section");
     page.id = "p1";
+  
+    const cards = [
+      {
+        title: "Global Production Index",
+        note: "Cereals, primary · 1961 = 100",
+        id: "production"
+      },
+      {
+        title: "Global Harvested Area",
+        note: "Cereals, primary · million hectares",
+        id: "area"
+      },
+      {
+        title: "Global Yield",
+        note: "Cereals, primary · tonnes per hectare",
+        id: "yield"
+      }
+    ];
   
     page.innerHTML = `
       <div class="layout">
@@ -196,74 +202,23 @@ export async function init(data, root) {
         </div>
   
         <div class="charts">
-          <div class="chart-card">
-            <div class="chart-head">
-              <div>
-                <div class="chart-title">
-                  Global Production Index
+          ${cards.map(card => `
+            <div class="chart-card">
+              <div class="chart-head">
+                <div>
+                  <div class="chart-title">${card.title}</div>
+                  <div class="chart-note">${card.note}</div>
                 </div>
-                <div class="chart-note">
-                  Cereals, primary · 1961 = 100
+                <div>
+                  <div class="chart-value" id="p1-${card.id}-value">—</div>
+                  <div class="chart-year" id="p1-${card.id}-year">
+                    Loading...
+                  </div>
                 </div>
               </div>
-  
-              <div>
-                <div class="chart-value"
-                     id="p1-production-value">—</div>
-                <div class="chart-year"
-                     id="p1-production-year">Loading...</div>
-              </div>
+              <svg class="chart-svg" id="p1-${card.id}-chart"></svg>
             </div>
-  
-            <svg class="chart-svg"
-                 id="p1-production-chart"></svg>
-          </div>
-  
-          <div class="chart-card">
-            <div class="chart-head">
-              <div>
-                <div class="chart-title">
-                  Global Harvested Area
-                </div>
-                <div class="chart-note">
-                  Cereals, primary · million hectares
-                </div>
-              </div>
-  
-              <div>
-                <div class="chart-value"
-                     id="p1-area-value">—</div>
-                <div class="chart-year"
-                     id="p1-area-year">Loading...</div>
-              </div>
-            </div>
-  
-            <svg class="chart-svg"
-                 id="p1-area-chart"></svg>
-          </div>
-  
-          <div class="chart-card">
-            <div class="chart-head">
-              <div>
-                <div class="chart-title">
-                  Global Yield
-                </div>
-                <div class="chart-note">
-                  Cereals, primary · tonnes per hectare
-                </div>
-              </div>
-  
-              <div>
-                <div class="chart-value"
-                     id="p1-yield-value">—</div>
-                <div class="chart-year"
-                     id="p1-yield-year">Loading...</div>
-              </div>
-            </div>
-  
-            <svg class="chart-svg"
-                 id="p1-yield-chart"></svg>
-          </div>
+          `).join("")}
         </div>
       </div>
     `;
@@ -292,15 +247,8 @@ export async function init(data, root) {
       const top = 10;
       const bottom = 25;
   
-      svg.setAttribute(
-        "viewBox",
-        `0 0 ${width} ${height}`
-      );
-  
-      svg.setAttribute(
-        "preserveAspectRatio",
-        "none"
-      );
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.setAttribute("preserveAspectRatio", "none");
   
       if (!points.length) return;
   
@@ -310,7 +258,6 @@ export async function init(data, root) {
       const minYear = Math.min(...years);
       const maxYear = Math.max(...years);
       const maxValue = Math.max(...values) * 1.08;
-      const minValue = 0;
   
       const x = year =>
         left +
@@ -319,70 +266,56 @@ export async function init(data, root) {
   
       const y = value =>
         height - bottom -
-        ((value - minValue) / (maxValue - minValue || 1)) *
+        (value / (maxValue || 1)) *
         (height - top - bottom);
   
       for (let i = 0; i <= 3; i++) {
-        const gy =
-          top + i * (height - top - bottom) / 3;
+        const gy = top + i * (height - top - bottom) / 3;
   
-        svg.appendChild(
-          svgElement("line", {
-            x1: left,
-            y1: gy,
-            x2: width - right,
-            y2: gy,
-            class: "chart-grid"
-          })
-        );
+        svg.appendChild(svgElement("line", {
+          x1: left,
+          y1: gy,
+          x2: width - right,
+          y2: gy,
+          class: "chart-grid"
+        }));
       }
   
-      const path = points
-        .map((p, i) =>
-          `${i === 0 ? "M" : "L"} ${x(p.year)} ${y(p.value)}`
-        )
-        .join(" ");
+      const path = points.map((p, i) =>
+        `${i === 0 ? "M" : "L"} ${x(p.year)} ${y(p.value)}`
+      ).join(" ");
   
       const areaPath =
         path +
         ` L ${x(points[points.length - 1].year)} ${height - bottom}` +
         ` L ${x(points[0].year)} ${height - bottom} Z`;
   
-      svg.appendChild(
-        svgElement("path", {
-          d: areaPath,
-          fill: options.fill || "rgba(23,97,60,0.09)"
-        })
-      );
+      svg.appendChild(svgElement("path", {
+        d: areaPath,
+        fill: "rgba(23,97,60,0.09)"
+      }));
   
-      svg.appendChild(
-        svgElement("path", {
-          d: path,
-          fill: "none",
-          stroke: options.color || "#17613c",
-          "stroke-width": 3,
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round",
-          "vector-effect": "non-scaling-stroke"
-        })
-      );
+      svg.appendChild(svgElement("path", {
+        d: path,
+        fill: "none",
+        stroke: options.color,
+        "stroke-width": 3,
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+        "vector-effect": "non-scaling-stroke"
+      }));
   
       const ticks = [
         ...new Set([minYear, 1980, 2000, maxYear])
-      ].filter(
-        year => year >= minYear && year <= maxYear
-      );
+      ].filter(year => year >= minYear && year <= maxYear);
   
       for (const year of ticks) {
         const label = svgElement("text", {
           x: x(year),
           y: height - 5,
           "text-anchor":
-            year === minYear
-              ? "start"
-              : year === maxYear
-                ? "end"
-                : "middle",
+            year === minYear ? "start" :
+            year === maxYear ? "end" : "middle",
           class: "chart-axis"
         });
   
@@ -406,42 +339,20 @@ export async function init(data, root) {
       svg.appendChild(hoverLine);
       svg.appendChild(hoverDot);
   
-      const valueEl = page.querySelector(
-        options.valueSelector
-      );
-  
-      const yearEl = page.querySelector(
-        options.yearSelector
-      );
+      const valueEl = page.querySelector(options.valueSelector);
+      const yearEl = page.querySelector(options.yearSelector);
   
       function update(index, showMarker) {
         const point = points[index];
   
-        valueEl.textContent = options.format(
-          point.value
-        );
-  
+        valueEl.textContent = options.format(point.value);
         yearEl.textContent = `As of ${point.year}`;
   
-        hoverLine.setAttribute(
-          "x1",
-          x(point.year)
-        );
+        hoverLine.setAttribute("x1", x(point.year));
+        hoverLine.setAttribute("x2", x(point.year));
   
-        hoverLine.setAttribute(
-          "x2",
-          x(point.year)
-        );
-  
-        hoverDot.setAttribute(
-          "cx",
-          x(point.year)
-        );
-  
-        hoverDot.setAttribute(
-          "cy",
-          y(point.value)
-        );
+        hoverDot.setAttribute("cx", x(point.year));
+        hoverDot.setAttribute("cy", y(point.value));
   
         hoverLine.setAttribute(
           "visibility",
@@ -460,16 +371,13 @@ export async function init(data, root) {
         const rect = svg.getBoundingClientRect();
   
         const mouseX =
-          (event.clientX - rect.left) /
-          rect.width * width;
+          (event.clientX - rect.left) / rect.width * width;
   
         let closest = 0;
         let smallestDistance = Infinity;
   
         points.forEach((point, index) => {
-          const distance = Math.abs(
-            x(point.year) - mouseX
-          );
+          const distance = Math.abs(x(point.year) - mouseX);
   
           if (distance < smallestDistance) {
             smallestDistance = distance;
@@ -486,25 +394,16 @@ export async function init(data, root) {
     }
   
     try {
-      const response = await fetch(
-        "/data_page5/agriculture.json"
-      );
+      const response = await fetch("/data_page5/agriculture.json");
   
       if (!response.ok) {
-        throw new Error(
-          `Cannot load data: HTTP ${response.status}`
-        );
+        throw new Error(`Cannot load data: HTTP ${response.status}`);
       }
   
       const dataset = await response.json();
   
-      const worldIndex = dataset.areas.indexOf(
-        "World"
-      );
-  
-      const cerealIndex = dataset.items.indexOf(
-        "Cereals, primary"
-      );
+      const worldIndex = dataset.areas.indexOf("World");
+      const cerealIndex = dataset.items.indexOf("Cereals, primary");
   
       if (worldIndex === -1 || cerealIndex === -1) {
         throw new Error(
@@ -542,32 +441,21 @@ export async function init(data, root) {
           value: row[5] / 1000
         }));
   
-      if (
-        !production.length ||
-        !area.length ||
-        !yieldData.length
-      ) {
-        throw new Error(
-          "No usable cereal data found"
-        );
+      if (!production.length || !area.length || !yieldData.length) {
+        throw new Error("No usable cereal data found");
       }
   
-      const baseProduction = production.find(
-        p => p.year === 1961
-      )?.value;
+      const baseProduction =
+        production.find(p => p.year === 1961)?.value;
   
       if (!baseProduction) {
-        throw new Error(
-          "1961 production baseline not available"
-        );
+        throw new Error("1961 production baseline not available");
       }
   
-      const productionIndex = production.map(
-        p => ({
-          year: p.year,
-          value: p.value / baseProduction * 100
-        })
-      );
+      const productionIndex = production.map(p => ({
+        year: p.year,
+        value: p.value / baseProduction * 100
+      }));
   
       drawChart(
         page.querySelector("#p1-production-chart"),
@@ -600,8 +488,7 @@ export async function init(data, root) {
         {
           valueSelector: "#p1-yield-value",
           yearSelector: "#p1-yield-year",
-          format: value =>
-            value.toFixed(2) + " t/ha",
+          format: value => value.toFixed(2) + " t/ha",
           color: "#53ad78"
         }
       );
@@ -614,9 +501,9 @@ export async function init(data, root) {
         "#p1-area-year",
         "#p1-yield-year"
       ]) {
-        page.querySelector(selector).textContent =
-          "Data unavailable";
+        const element = page.querySelector(selector);
+        if (element) element.textContent = "Data unavailable";
       }
     }
   }
-  
+    
