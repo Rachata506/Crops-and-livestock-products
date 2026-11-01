@@ -2,7 +2,7 @@
    text + controls on the left, the visual on the right, one idea per screen, dot navigation on the right edge.
    Page-specific rules live in pageN.css / the page's own file and only use the tokens below. */
 :root {
-    --bg: #fbfaf7;
+    --bg: white;
     /* page background */
     --surface: #fbfaf7;
     /* panels / inputs (flat, same as the page) */
@@ -130,7 +130,6 @@ footer {
     min-height: 100vh;
     position: relative;
     background: var(--bg);
-    border-bottom: 1px solid var(--line);
     padding: 48px 90px 56px 56px;
 }
 
