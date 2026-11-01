@@ -10,7 +10,7 @@ export async function init(data, root) {
         --muted: #607067;
         font-family: Arial, Helvetica, sans-serif;
         color: var(--ink);
-        background: white;
+        background: #faf9f6;
         min-height: 100vh;
         padding: 35px 3% 65px;
         box-sizing: border-box;
