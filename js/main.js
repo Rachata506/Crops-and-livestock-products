@@ -27,11 +27,6 @@ pages.forEach((s, i) => dotNav.insertAdjacentHTML('beforeend',
     `<a href="#${s.id}" aria-label="Slide ${i + 1}" title="Slide ${i + 1}"></a>`));
 const links = [...dotNav.querySelectorAll('a')];
 
-// Small arrow under each section (no page names)
-pages.forEach((s, i) => {
-    if (pages[i + 1]) s.insertAdjacentHTML('beforeend', `<a class="next" href="#${pages[i + 1].id}" aria-label="Next slide">↓</a>`);
-});
-
 // Presentation motion: activate slide when it scrolls into view
 const slideObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {

@@ -22,293 +22,43 @@ export async function init(data, root) {
     style.id = 'page5-custom-style';
 
     style.textContent = `
-      #p5 {
-        background: #ffffff;
-        color: #263341;
-        font-family: inherit;
-        height: auto;
-        min-height: 100vh;
-      }
+      /* Page 5. Layout comes from the shared split grid in style.css (.pl = left, .pr = right). */
+      #p5, #p5 * { box-sizing: border-box; }
+      #p5 .dashboard { display: contents; }
+      #p5 .pr { display: flex; flex-direction: column; gap: 16px; }
 
-      #p5, #p5 * {
-        box-sizing: border-box;
-      }
+      #p5 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; }
+      #p5 .insight { border: 0; background: transparent; padding: 0; margin-bottom: 14px; }
+      #p5 .insight h2 { margin: 0 0 10px; color: var(--ink); font: 700 20px/1.35 var(--font); }
+      #p5 .panel h2 { margin: 0; color: var(--ink); font: 700 18px/1.35 var(--font); }
+      #p5 .insight p { font-size: 16px; line-height: 1.6; color: var(--ink2); margin: 0 0 10px; }
+      #p5 .insight .note { font-size: 14px; color: var(--faint); margin-top: 12px; }
+      #p5 .scatter-panel, #p5 .line-panel { padding: 16px 18px 12px; }
+      #p5 .panel-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+      #p5 .small { font-size: 14px; color: var(--ink2); margin: 4px 0 0; line-height: 1.5; }
+      #p5 .count, #p5 .legend-note { font-size: 14px; color: var(--ink2); white-space: nowrap; }
+      #p5 .chart-wrap { position: relative; width: 100%; }
+      #p5 .scatter-wrap { height: 280px; }
+      #p5 .line-wrap { height: 280px; }
 
-      #p5 #p5-root {
-        width: 100%;
-        max-width: none;
-      }
+      #p5 .filters { display: flex; flex-direction: column; gap: 12px; }
+      #p5 .filter-panel { padding: 14px 16px; }
+      #p5 .filter-panel label { display: block; font-weight: 600; font-size: 15px; color: var(--ink); margin-bottom: 8px; }
+      #p5 .filter-panel select { width: 100%; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-size: 15px; }
+      #p5 .filter-panel select:hover { border-color: var(--ink2); }
+      #p5 .filter-panel input[type="range"] { width: 100%; margin: 14px 0 4px; }
+      #p5 .range-labels { display: flex; justify-content: space-between; color: var(--faint); font-size: 13px; }
 
-      #p5 .dashboard {
-        width: 100%;
-        max-width: 1500px;
-        margin: 0 auto;
-        padding: 32px 42px 50px;
-      }
-
-      #p5 .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 24px;
-        padding: 22px 26px;
-        background: #ffffff;
-        border: 1px solid #e1e9e5;
-        border-radius: 18px;
-        box-shadow: none;
-      }
-
-      #p5 .topbar h1 {
-        font-family: Georgia, "Times New Roman", serif;
-        color: #1e704c;
-        font-size: clamp(26px, 3vw, 40px);
-        margin: 0;
-        letter-spacing: -.03em;
-        line-height: 1.2;
-      }
-
-      #p5 .subtitle {
-        margin: 9px 0 0;
-        color: #647381;
-        font-size: 14px;
-        line-height: 1.6;
-      }
-
-      #p5 .intro-grid {
-        display: grid;
-        grid-template-columns:
-          minmax(220px, .9fr)
-          minmax(350px, 1.45fr)
-          minmax(180px, .5fr);
-        gap: 16px;
-        align-items: stretch;
-      }
-
-      #p5 .bottom-grid {
-        display: grid;
-        grid-template-columns:
-          minmax(350px, 1.6fr)
-          minmax(230px, .8fr);
-        gap: 16px;
-        margin-top: 16px;
-      }
-
-      #p5 .panel {
-        background: #ffffff;
-        border: 1px solid #dce8e1;
-        border-radius: 16px;
-        box-shadow: none;
-        min-width: 0;
-      }
-
-      #p5 .insight {
-        padding: 22px 24px;
-      }
-
-      #p5 .insight h2,
-      #p5 .panel h2 {
-        margin: 0;
-        color: #153e35;
-        font-size: 18px;
-        font-weight: 700;
-        letter-spacing: -.02em;
-        line-height: 1.4;
-      }
-
-      #p5 .insight h2 {
-        text-align: center;
-        margin-bottom: 14px;
-      }
-
-      #p5 .insight p {
-        font-size: 13px;
-        line-height: 1.75;
-        color: #596575;
-        margin: 0 0 12px;
-      }
-
-      #p5 .insight .note {
-        font-size: 11px;
-        color: #8792a1;
-        border-top: 1px solid #e5eee9;
-        padding-top: 12px;
-        margin-top: 16px;
-      }
-
-      #p5 .scatter-panel,
-      #p5 .line-panel {
-        padding: 20px 20px 14px;
-      }
-
-      #p5 .panel-heading {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 12px;
-      }
-
-      #p5 .small {
-        font-size: 11px;
-        color: #7b8991;
-        margin: 6px 0 0;
-        line-height: 1.5;
-      }
-
-      #p5 .count,
-      #p5 .legend-note {
-        font-size: 11px;
-        color: #718091;
-        white-space: nowrap;
-      }
-
-      #p5 .chart-wrap {
-        position: relative;
-        width: 100%;
-      }
-
-      #p5 .scatter-wrap {
-        height: 300px;
-      }
-
-      #p5 .line-wrap {
-        height: 330px;
-      }
-
-      #p5 .filters {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      #p5 .filter-panel {
-        padding: 18px;
-      }
-
-      #p5 .filter-panel label {
-        display: block;
-        font-weight: 700;
-        font-size: 13px;
-        color: #153e35;
-        margin-bottom: 10px;
-      }
-
-      #p5 .filter-panel select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #cdded5;
-        border-radius: 9px;
-        background: #ffffff;
-        color: #263341;
-        font: inherit;
-        font-size: 12px;
-      }
-
-      #p5 .filter-panel select:focus {
-        outline: 2px solid #168a77;
-        outline-offset: 2px;
-      }
-
-      #p5 .filter-panel input[type="range"] {
-        width: 100%;
-        margin: 18px 0 4px;
-        accent-color: #087f70;
-      }
-
-      #p5 .range-labels {
-        display: flex;
-        justify-content: space-between;
-        color: #8a95a4;
-        font-size: 10px;
-      }
-
-      #p5 .kpi-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      #p5 .kpi {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-height: 120px;
-      }
-
-      #p5 .kpi p {
-        margin: 0 0 9px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #647381;
-      }
-
-      #p5 .kpi strong {
-        color: #153e35;
-        font-size: clamp(21px, 2vw, 30px);
-        letter-spacing: -.04em;
-        overflow-wrap: anywhere;
-      }
-
-      #p5 .kpi span {
-        font-size: 10px;
-        color: #8a95a4;
-        margin-top: 7px;
-      }
-
-      @media (max-width: 1050px) {
-        #p5 .intro-grid {
-          grid-template-columns: 1fr 1.4fr;
-        }
-
-        #p5 .filters {
-          grid-column: 1 / -1;
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        #p5 .bottom-grid {
-          grid-template-columns: 1fr;
-        }
-
-        #p5 .kpi-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
+      #p5 .kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      #p5 .kpi { padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; }
+      #p5 .kpi p { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--ink2); }
+      #p5 .kpi strong { color: var(--ink); font: 700 clamp(20px, 2vw, 28px)/1.15 var(--font); overflow-wrap: anywhere; }
+      #p5 .kpi span { font-size: 12.5px; color: var(--faint); margin-top: 6px; }
 
       @media (max-width: 680px) {
-        #p5 .dashboard {
-          padding: 12px;
-        }
-
-        #p5 .topbar {
-          align-items: flex-start;
-          flex-direction: column;
-          padding: 20px;
-        }
-
-        #p5 .intro-grid,
-        #p5 .filters {
-          grid-template-columns: 1fr;
-        }
-
-        #p5 .scatter-wrap,
-        #p5 .line-wrap {
-          height: 280px;
-        }
-
-        #p5 .kpi-grid {
-          grid-template-columns: 1fr;
-        }
-
-        #p5 .panel-heading {
-          flex-direction: column;
-        }
-
-        #p5 .legend-note {
-          white-space: normal;
-        }
+        #p5 .kpi-grid { grid-template-columns: 1fr; }
+        #p5 .panel-heading { flex-direction: column; }
+        #p5 .legend-note { white-space: normal; }
       }
     `;
 
@@ -318,18 +68,7 @@ export async function init(data, root) {
   // Complete Page 5 HTML.
   root.innerHTML = `
     <div class="dashboard">
-
-      <header class="topbar">
-        <div>
-          <h1>Agricultural Production Dashboard</h1>
-          <p class="subtitle">
-            Explore global crop production, harvested area and yield trends.
-          </p>
-        </div>
-      </header>
-
-      <div class="intro-grid">
-
+      <div class="pl">
         <article class="panel insight">
           <h2>Key Insight</h2>
           <p>
@@ -346,23 +85,6 @@ export async function init(data, root) {
             Bubble size represents production volume.
           </p>
         </article>
-
-        <article class="panel scatter-panel">
-          <div class="panel-heading">
-            <div>
-              <h2>Land vs. Yield</h2>
-              <p class="small">
-                Country/area comparison for the selected crop and year
-              </p>
-            </div>
-            <span id="scatterCount" class="count">—</span>
-          </div>
-
-          <div class="chart-wrap scatter-wrap">
-            <canvas id="scatterChart"></canvas>
-          </div>
-        </article>
-
         <aside class="filters">
 
           <div class="panel filter-panel">
@@ -397,9 +119,22 @@ export async function init(data, root) {
 
         </aside>
       </div>
+      <div class="pr">
+        <article class="panel scatter-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>Land vs. Yield</h2>
+              <p class="small">
+                Country/area comparison for the selected crop and year
+              </p>
+            </div>
+            <span id="scatterCount" class="count">—</span>
+          </div>
 
-      <div class="bottom-grid">
-
+          <div class="chart-wrap scatter-wrap">
+            <canvas id="scatterChart"></canvas>
+          </div>
+        </article>
         <article class="panel line-panel">
           <div class="panel-heading">
             <div>
@@ -417,7 +152,6 @@ export async function init(data, root) {
             <canvas id="lineChart"></canvas>
           </div>
         </article>
-
         <div class="kpi-grid">
 
           <article class="panel kpi">
@@ -514,7 +248,7 @@ export async function init(data, root) {
 
     root.querySelector('.dashboard')?.insertAdjacentHTML(
       'afterbegin',
-      `<div class="panel" style="padding:16px;color:#a22;margin-bottom:16px">
+      `<div class="panel" style="padding:16px;color:var(--soil);margin-bottom:16px">
         Page 5 could not be loaded: ${escapeHtml(err.message)}
       </div>`
     );
@@ -573,14 +307,10 @@ function escapeHtml(s) {
   );
 }
 
+// Bubbles use the site green; the area picked in the filter is highlighted in gold.
 function colorForArea(name) {
-  let hash = 0;
-
-  for (let i = 0; i < name.length; i++) {
-    hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-  }
-
-  return `hsla(${hash % 360}, 58%, 48%, 0.68)`;
+  const selected = $('areaSelect') ? $('areaSelect').value : '';
+  return name === selected ? 'rgba(230, 159, 0, 0.95)' : 'rgba(31, 111, 74, 0.55)';
 }
 
 function buildCharts() {
@@ -592,7 +322,7 @@ function buildCharts() {
         data: [],
         backgroundColor: [],
         borderColor: [],
-        hoverBackgroundColor: '#e6a35c'
+        hoverBackgroundColor: '#e69f00'
       }]
     },
     options: {
@@ -617,14 +347,14 @@ function buildCharts() {
             text: 'Area harvested (ha)'
           },
           ticks: { callback: v => compact(v) },
-          grid: { color: '#edf1f5' }
+          grid: { color: '#e6e2d3' }
         },
         y: {
           title: {
             display: true,
             text: 'Yield (kg/ha)'
           },
-          grid: { color: '#edf1f5' }
+          grid: { color: '#e6e2d3' }
         }
       }
     }
@@ -638,8 +368,8 @@ function buildCharts() {
         {
           label: 'Area harvested (ha)',
           data: [],
-          borderColor: '#6eb8ac',
-          backgroundColor: '#6eb8ac',
+          borderColor: '#1f6f4a',
+          backgroundColor: '#1f6f4a',
           borderWidth: 2.5,
           pointRadius: 0,
           tension: .25,
@@ -648,8 +378,8 @@ function buildCharts() {
         {
           label: 'Production (tonnes)',
           data: [],
-          borderColor: '#4f7fb5',
-          backgroundColor: '#4f7fb5',
+          borderColor: '#d55e00',
+          backgroundColor: '#d55e00',
           borderWidth: 2.5,
           pointRadius: 0,
           tension: .25,
@@ -671,7 +401,7 @@ function buildCharts() {
           labels: {
             usePointStyle: true,
             boxWidth: 7,
-            font: { size: 10 }
+            font: { size: 13 }
           }
         },
         tooltip: {
@@ -693,7 +423,7 @@ function buildCharts() {
             text: 'Area harvested (ha)'
           },
           ticks: { callback: compact },
-          grid: { color: '#edf1f5' }
+          grid: { color: '#e6e2d3' }
         },
         y1: {
           position: 'right',
