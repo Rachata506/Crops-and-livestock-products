@@ -34,9 +34,9 @@
 
     // ---- left column: intro + controls; right column: chart ----
     text.insertAdjacentHTML("beforeend", `
-      <p class="intro">Switch between crops and regions, and between stacked areas and lines.
-        <b>Drag on the small chart</b> under the main one to zoom into a time range (double-click it to reset).
-        <b>Click a legend item</b> to hide or show it, <b>double-click</b> to show it alone.</p>
+      <p class="intro">Global crop production grew from about 2,500 million tonnes in 1961 to nearly 9,800 million tonnes in 2024, almost four times as much.
+        <b>Asia now grows half of the world's output</b>, up from 35%, while <b>Europe's share fell from 30% to 11%</b>.
+        Sugar cane is the largest single crop, at about 1,930 million tonnes in 2024.</p>
       <div class="controls">
         <div class="seg" data-g="by"><button data-v="crop" class="on">By crop</button><button data-v="region">By region</button></div>
         <div class="seg" data-g="mode"><button data-v="area" class="on">Stacked area</button><button data-v="line">Lines</button></div>
