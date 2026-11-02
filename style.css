@@ -2,7 +2,7 @@
    text + controls on the left, the visual on the right, one idea per screen, dot navigation on the right edge.
    Page-specific rules live in pageN.css / the page's own file and only use the tokens below. */
 :root {
-    --bg: white;
+    --bg: #fbf9f5;
     /* page background */
     --surface: #fbfaf7;
     /* panels / inputs (flat, same as the page) */
