@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+//import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 
 const SOURCE_URL = new URL('../../data/data.csv', import.meta.url).href;

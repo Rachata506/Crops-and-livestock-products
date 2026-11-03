@@ -1,5 +1,5 @@
 /**import React, { useEffect, useRef } from 'react';*/
-import * as d3 from 'd3';
+//import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 
 /** React/Vite page: copy data_page2/data/food to your project's public directory. */
