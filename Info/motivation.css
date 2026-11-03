@@ -1,25 +1,31 @@
 /* MOTIVATION page. Layout comes from the global split grid in style.css (header + .pl left, .pr right, .pw full width).
    Only its own parts are styled here, all scoped to #motivation. */
+#motivation .pl>p {
+    font-size: 20px;
+    line-height: 1.6;
+}
+
 #motivation .mo-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+    gap: 16px;
 }
 
 #motivation .mo-card {
+    padding: 20px 22px;
     border-top: 3px solid var(--accent, var(--ink));
 }
 
 #motivation .mo-card h3 {
-    margin: 0 0 6px;
-    font-size: 19px;
+    margin: 0 0 8px;
+    font-size: 23px;
     line-height: 1.3;
     color: var(--ink);
 }
 
 #motivation .mo-card p {
     margin: 0;
-    font-size: 15px;
+    font-size: 18px;
     line-height: 1.55;
     color: var(--ink2);
 }
@@ -30,7 +36,7 @@
     align-items: stretch;
     gap: 0;
     border-top: 1px solid var(--line);
-    padding-top: 20px;
+    padding-top: 22px;
 }
 
 #motivation .mo-step {
@@ -41,27 +47,27 @@
 }
 
 #motivation .mo-step+.mo-step {
-    padding-left: 28px;
+    padding-left: 32px;
 }
 
 #motivation .mo-step+.mo-step::before {
     content: "→";
     position: absolute;
     left: -6px;
-    top: 4px;
-    font-size: 26px;
+    top: 6px;
+    font-size: 30px;
     color: var(--faint);
 }
 
 #motivation .mo-step b {
     display: block;
-    font: 700 40px/1.1 var(--font);
+    font: 700 50px/1.1 var(--font);
     color: var(--ink);
     font-variant-numeric: tabular-nums;
 }
 
 #motivation .mo-step span {
-    font-size: 15px;
+    font-size: 18px;
     color: var(--ink2);
 }
 

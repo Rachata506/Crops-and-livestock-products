@@ -9,51 +9,57 @@
     --r-oceania: #7b4b6e;
 }
 
+#insight .pl>p {
+    font-size: 20px;
+    line-height: 1.6;
+}
+
 #insight .pl>p.ki-cap {
-    margin: 16px 0 0;
-    font-size: 16px;
+    margin: 18px 0 0;
+    font-size: 19px;
     color: var(--ink2);
     min-height: 3.2em;
 }
 
 #insight .ki-card {
-    padding: 20px 22px;
+    padding: 22px 24px;
 }
 
 #insight .ki-title {
-    margin: 0 0 10px;
-    font-size: 15px;
+    margin: 0 0 12px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--ink);
 }
 
 #insight .ki-title small {
+    font-size: 15px;
     font-weight: 400;
     color: var(--faint);
 }
 
 #insight .ki-title:not(:first-child) {
-    margin-top: 22px;
+    margin-top: 26px;
 }
 
 /* growth bars */
 #insight .ki-row {
     display: grid;
-    grid-template-columns: 130px 1fr 52px;
+    grid-template-columns: 170px 1fr 62px;
     align-items: center;
-    gap: 12px;
-    margin: 0 0 10px;
+    gap: 14px;
+    margin: 0 0 12px;
 }
 
 #insight .ki-lab {
-    font-size: 15px;
+    font-size: 18px;
     color: var(--ink2);
 }
 
 #insight .ki-track {
     position: relative;
     display: block;
-    height: 16px;
+    height: 20px;
     border-radius: 4px;
     background: var(--line);
 }
@@ -91,7 +97,7 @@
 
 /* the 1x line */
 #insight .ki-val {
-    font-size: 18px;
+    font-size: 21px;
     font-variant-numeric: tabular-nums;
     text-align: right;
 }
@@ -99,20 +105,20 @@
 /* share bars */
 #insight .ki-share-row {
     display: grid;
-    grid-template-columns: 44px 1fr;
+    grid-template-columns: 52px 1fr;
     align-items: center;
-    gap: 10px;
-    margin: 0 0 8px;
+    gap: 12px;
+    margin: 0 0 10px;
 }
 
 #insight .ki-yr {
-    font-size: 14px;
+    font-size: 17px;
     color: var(--ink2);
 }
 
 #insight .ki-stack {
     display: flex;
-    height: 26px;
+    height: 32px;
     border-radius: 4px;
     overflow: hidden;
 }
@@ -120,7 +126,7 @@
 #insight .ki-stack i {
     flex-basis: 0;
     min-width: 0;
-    font: 600 12px/26px var(--font);
+    font: 600 15px/32px var(--font);
     color: #fff;
     text-align: center;
     white-space: nowrap;
@@ -130,25 +136,25 @@
 #insight .ki-legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 14px;
-    margin: 8px 0 0 54px;
+    gap: 6px 16px;
+    margin: 10px 0 0 64px;
     padding: 0;
     list-style: none;
-    font-size: 13px;
+    font-size: 16px;
     color: var(--ink2);
 }
 
 #insight .ki-legend i {
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     margin-right: 6px;
     border-radius: 2px;
 }
 
 #insight .ki-note {
-    margin: 14px 0 0;
-    font-size: 12px;
+    margin: 16px 0 0;
+    font-size: 14px;
     line-height: 1.5;
     color: var(--faint);
 }
@@ -157,18 +163,22 @@
 #insight .ki-impact {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: 16px;
+}
+
+#insight .ki-impact .card {
+    padding: 20px 22px;
 }
 
 #insight .ki-impact h3 {
-    margin: 0 0 6px;
-    font-size: 18px;
+    margin: 0 0 8px;
+    font-size: 22px;
     color: var(--ink);
 }
 
 #insight .ki-impact p {
     margin: 0;
-    font-size: 15px;
+    font-size: 18px;
     line-height: 1.55;
     color: var(--ink2);
 }
@@ -179,7 +189,7 @@
     }
 
     #insight .ki-row {
-        grid-template-columns: 96px 1fr 46px;
+        grid-template-columns: 120px 1fr 52px;
     }
 }
 

@@ -1,4 +1,8 @@
 import { loadData, CSV_URL } from './shared.js';
+import './pages/cover.js';        // cover: numbers count up
+import './pages/motivation.js';   // motivation: cards fade in, numbers count up
+import './pages/objective.js';    // objective: question cards fade in
+import './pages/insight.js';      // key insight: crop buttons switch the growth bars
 import * as p1 from './pages/page1.js';
 import * as p2 from './pages/page2.js';
 import * as p3 from './pages/page3.js';

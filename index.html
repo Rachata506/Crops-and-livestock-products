@@ -10,20 +10,14 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./page3.css">
   <link rel="stylesheet" href="./page6.css">
-  <link rel="stylesheet" href="./cover.css">
-  <link rel="stylesheet" href="./objective.css">
-  <link rel="stylesheet" href="./motivation.css">
-  <link rel="stylesheet" href="./insight.css">
+  <link rel="stylesheet" href="./Info/cover.css">
+  <link rel="stylesheet" href="./Info/motivation.css">
+  <link rel="stylesheet" href="./Info/objective.css">
+  <link rel="stylesheet" href="./Info/insight.css">
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
-  <!-- Page 3 data fallback (window.CLEAN_CSV). Must contain the NEW page3_data format. "defer" keeps the 3 MB file from blocking the page. -->
-  <script src="./cleaned_data.js" defer></script>
   <script type="module" src="./js/main.js"></script>
-  <script type="module" src="./js/pages/cover.js"></script>
-  <script type="module" src="./js/pages/objective.js"></script>
-  <script type="module" src="./js/pages/motivation.js"></script>
-  <script type="module" src="./js/pages/insight.js"></script>
 </head>
 
 <body>
@@ -35,38 +29,99 @@
   </div>
 
   <main>
+    <!-- COVER (before page 1) -->
     <section id="cover" class="page" data-title="Cover">
-      <div id="cover-root">
-        <p class="cv-eyebrow">DSS433 – Data Visualization · Group: What’s??</p>
-        <h1 class="cv-title">Crops and Livestock Products</h1>
+      <div class="cv-inner">
+        <p class="cv-eyebrow">Data visualization project · FAOSTAT</p>
+        <h1 class="cv-title">Crops &amp; Livestock Products</h1>
         <div class="cv-rule"></div>
-
-        <a class="btn" href="#objective">Start exploring ↓</a>
+        <p class="cv-sub">How has world food production changed since 1961, and where does the growth come from: more
+          land or higher yields?</p>
+        <div class="stats cv-stats">
+          <div class="stat"><b data-count="9792">0</b><span>million tonnes of crops in 2024</span></div>
+          <div class="stat"><b data-count="209">0</b><span>countries and areas</span></div>
+          <div class="stat"><b data-count="64">0</b><span>years of data, 1961–2024</span></div>
+        </div>
+        <a class="btn" href="#p1">Start exploring ↓</a>
+        <p class="cv-source">Source: FAOSTAT, Crops and Livestock Products (QCL). Figures are totals of the crops in
+          this dataset.</p>
       </div>
     </section>
 
+    <!-- MOTIVATION (after the cover) -->
+    <section id="motivation" class="page" data-title="Motivation">
+      <header>
+        <h2>Why look at food production?</h2>
+        <p class="takeaway">The world grows almost four times more crops than in 1961, but not everywhere, and not in
+          the same way.</p>
+      </header>
+      <div id="motivation-root">
+        <div class="pl">
+          <p>Feeding a growing population depends on how much food countries can grow, and on whether that growth comes
+            from farming more land or from getting more out of each hectare.</p>
+          <p>FAOSTAT records this for every country since 1961, but as one huge table it is hard to read. This dashboard
+            turns that table into a short visual story.</p>
+        </div>
+        <div class="pr">
+          <div class="mo-grid">
+            <article class="card mo-card stg" style="--accent: var(--green)">
+              <h3>Food security</h3>
+              <p>Production levels show which regions grow most of the world's food, and how that is changing.</p>
+            </article>
+            <article class="card mo-card stg" style="--accent: var(--gold)">
+              <h3>Land is limited</h3>
+              <p>New farmland comes at the cost of forests and habitats, so growth from higher yields matters.</p>
+            </article>
+            <article class="card mo-card stg" style="--accent: var(--sky)">
+              <h3>A shifting centre</h3>
+              <p>Asia now grows half of the world's crop output, up from about a third in 1961.</p>
+            </article>
+            <article class="card mo-card stg" style="--accent: var(--soil)">
+              <h3>Hidden in a table</h3>
+              <p>Almost half a million rows hide the trends; charts make them visible at a glance.</p>
+            </article>
+          </div>
+        </div>
+        <div class="pw">
+          <div class="mo-flow">
+            <div class="mo-step stg"><b data-count="474835">0</b><span>rows in the FAOSTAT table</span></div>
+            <div class="mo-step stg"><b data-count="158">0</b><span>crops in 209 countries and areas</span></div>
+            <div class="mo-step stg"><b data-count="64">0</b><span>years, 1961–2024</span></div>
+            <div class="mo-step stg"><b data-count="6">0</b><span>chart pages to explore them</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OBJECTIVE (after motivation) -->
     <section id="objective" class="page" data-title="Objective">
       <header>
-        <h2>Our objective</h2>
-        <p class="takeaway">Turn a huge FAOSTAT table into one interactive story about the world’s food production.</p>
+        <h2>What we set out to answer</h2>
+        <p class="takeaway">Five questions, one page each.</p>
       </header>
       <div id="objective-root">
         <div class="pl">
-          <p>We show agricultural production <span class="hl">across countries and over time</span>, so anyone can
-            compare, spot patterns and ask their own questions, without reading rows of numbers.</p>
-          <p class="ob-label">Who it is for</p>
+          <p>Our goal is to show how global crop production has changed since 1961, where it happens and what drives its
+            growth, in a way anyone can explore.</p>
+          <p class="ob-label">Audience</p>
           <ul class="ob-chips">
             <li>Students</li>
-            <li>Researchers</li>
-            <li>Farmers</li>
-            <li>Agribusinesses</li>
-            <li>Policymakers</li>
+            <li>Policy makers</li>
+            <li>Journalists</li>
+            <li>Anyone curious about food</li>
+          </ul>
+          <p class="ob-label">Data</p>
+          <ul class="ob-chips">
+            <li>FAOSTAT QCL</li>
+            <li>1961–2024</li>
+            <li>209 countries and areas</li>
+            <li>158 crops</li>
           </ul>
         </div>
         <div class="pr">
           <ol class="ob-qs">
             <li class="stg"><a class="card ob-q" href="#p2"><span class="ob-n">1</span><b>Where is food
-                  produced?</b><small>World map explorer</small></a></li>
+                  produced?</b><small>World map</small></a></li>
             <li class="stg"><a class="card ob-q" href="#p3"><span class="ob-n">2</span><b>How has production changed
                   since 1961?</b><small>Trends over time</small></a></li>
             <li class="stg"><a class="card ob-q" href="#p4"><span class="ob-n">3</span><b>Who leads, and has that
@@ -74,52 +129,8 @@
             <li class="stg"><a class="card ob-q" href="#p5"><span class="ob-n">4</span><b>Did growth come from more land
                   or higher yield?</b><small>Land vs. yield</small></a></li>
             <li class="stg"><a class="card ob-q" href="#p6"><span class="ob-n">5</span><b>How does my country
-                  compare?</b><small>Country profile and compare</small></a></li>
+                  compare?</b><small>Country compare</small></a></li>
           </ol>
-        </div>
-      </div>
-    </section>
-
-    <section id="motivation" class="page" data-title="Motivation">
-      <header>
-        <h2>Why does this matter?</h2>
-        <p class="takeaway">Food security, livelihoods and the economy all depend on agriculture, yet production differs
-          widely from one country to another.</p>
-      </header>
-      <div id="motivation-root">
-        <div class="pl">
-          <p>Climate, natural resources and farming practices make output very uneven around the world. Raw statistics
-            hide these differences; <span class="hl">charts and maps make them visible</span>.</p>
-        </div>
-        <div class="pr">
-          <div class="mo-grid">
-            <article class="card mo-card stg" style="--accent: var(--green)">
-              <h3>Food security</h3>
-              <p>Knowing who produces what shows where food supply is secure and where it is at risk.</p>
-            </article>
-            <article class="card mo-card stg" style="--accent: var(--gold)">
-              <h3>Livelihoods and economy</h3>
-              <p>Farming supports millions of livelihoods and a large part of the global economy.</p>
-            </article>
-            <article class="card mo-card stg" style="--accent: var(--sky)">
-              <h3>Uneven production</h3>
-              <p>Climate, natural resources and farming practices differ, so countries produce very different amounts.
-              </p>
-            </article>
-            <article class="card mo-card stg" style="--accent: var(--soil)">
-              <h3>Data that is hard to read</h3>
-              <p>FAOSTAT holds hundreds of thousands of records. Visualisation turns them into patterns anyone can read.
-              </p>
-            </article>
-          </div>
-        </div>
-        <div class="pw">
-          <div class="mo-flow stg">
-            <div class="mo-step"><b data-count="474835">474,835</b><span>country-crop-year records</span></div>
-            <div class="mo-step"><b>5</b><span>interactive views: map, trends, top producers, land vs. yield, country
-                compare</span></div>
-            <div class="mo-step"><b>1</b><span>story anyone can explore</span></div>
-          </div>
         </div>
       </div>
     </section>
@@ -131,21 +142,23 @@
     <section id="p2" class="page" data-title="World Map">
       <header>
         <h2>Where is food produced?</h2>
+        <p class="takeaway" id="p2-takeaway">Takeaway: …</p>
       </header>
       <div id="p2-root"></div>
     </section>
 
     <section id="p3" class="page" data-title="Trends">
-      <header class="text">
+      <header>
         <h2>How has production changed since 1961?</h2>
+        <p class="takeaway" id="p3-takeaway">Takeaway: …</p>
       </header>
-      <div id="p3-root" class="viz"></div>
+      <div id="p3-root"></div>
     </section>
 
     <section id="p4" class="page" data-title="Top Producers">
       <header>
         <h2>Who leads, and has that changed?</h2>
-
+        <p class="takeaway" id="p4-takeaway">Takeaway: …</p>
       </header>
       <div id="p4-root"></div>
     </section>
@@ -153,6 +166,7 @@
     <section id="p5" class="page" data-title="Land vs Yield">
       <header>
         <h2>Did growth come from more land or higher yield?</h2>
+        <p class="takeaway" id="p5-takeaway">Takeaway: …</p>
       </header>
       <div id="p5-root"></div>
     </section>
@@ -160,98 +174,83 @@
     <section id="p6" class="page" data-title="Country Compare" aria-labelledby="p6-title">
       <header>
         <h2 id="p6-title">How does my country compare?</h2>
+        <p class="takeaway" id="p6-takeaway">Takeaway: …</p>
       </header>
       <div id="p6-root"></div>
     </section>
 
+    <!-- KEY INSIGHT (after page 6, before page 7) -->
     <section id="insight" class="page" data-title="Key Insight">
       <header>
-        <h2>Key insight and potential impact</h2>
-        <p class="takeaway">Output has grown about <span class="hl">3.9×</span> since 1961, mostly because each hectare
-          produces more, not because we farm far more land.</p>
+        <h2>Key insight: growth came from yield, not land</h2>
+        <p class="takeaway">Since 1961, crop output grew ×3.9 while harvested land grew only ×1.5.</p>
       </header>
       <div id="insight-root">
         <div class="pl">
-          <p>Between 1961 and 2024, <span class="hl">harvested area grew far less than production</span>. The difference
-            is yield: tonnes produced per hectare.</p>
-          <div class="controls">
-            <div class="seg" id="ki-seg" role="group" aria-label="Choose a crop">
-              <button type="button" data-k="all" class="on" aria-pressed="true">All crops</button>
-              <button type="button" data-k="wheat" aria-pressed="false">Wheat</button>
-              <button type="button" data-k="rice" aria-pressed="false">Rice</button>
-              <button type="button" data-k="maize" aria-pressed="false">Maize</button>
-            </div>
+          <p>Each hectare now produces about two and a half times as much as in 1961. Most of the extra food came from
+            farming existing land better, not from farming much more of it.</p>
+          <div class="seg" id="ki-seg" role="group" aria-label="Crop">
+            <button type="button" data-k="all" class="on" aria-pressed="true">All crops</button><button type="button"
+              data-k="wheat" aria-pressed="false">Wheat</button><button type="button" data-k="rice"
+              aria-pressed="false">Rice</button><button type="button" data-k="maize" aria-pressed="false">Maize</button>
           </div>
-          <p class="ki-cap" id="ki-cap" aria-live="polite">All crops: output grew ×3.9 on 54% more harvested land, while
-            yield per hectare grew ×2.5.</p>
+          <p class="ki-cap" id="ki-cap" aria-live="polite"></p>
         </div>
-
         <div class="pr">
           <div class="card ki-card">
-            <p class="ki-title">Growth since 1961 <small>(1961 = 1×)</small></p>
-            <div class="ki-bars">
-              <div class="ki-row" data-bar="p"><span class="ki-lab">Production</span><span class="ki-track"><i
-                    class="ki-fill ki-p" style="--w:60%"></i><i class="ki-one"></i></span><b class="ki-val">×3.9</b>
-              </div>
-              <div class="ki-row" data-bar="y"><span class="ki-lab">Yield per hectare</span><span class="ki-track"><i
-                    class="ki-fill ki-y" style="--w:39%"></i><i class="ki-one"></i></span><b class="ki-val">×2.5</b>
-              </div>
-              <div class="ki-row" data-bar="a"><span class="ki-lab">Harvested area</span><span class="ki-track"><i
-                    class="ki-fill ki-a" style="--w:24%"></i><i class="ki-one"></i></span><b class="ki-val">×1.5</b>
-              </div>
+            <p class="ki-title">Growth from 1961 to 2024 <small>(grey line = ×1, no change)</small></p>
+            <div class="ki-row" data-bar="p"><span class="ki-lab">Production</span><span class="ki-track"><span
+                  class="ki-fill ki-p"></span><span class="ki-one"></span></span><span class="ki-val">×3.9</span></div>
+            <div class="ki-row" data-bar="y"><span class="ki-lab">Yield per hectare</span><span class="ki-track"><span
+                  class="ki-fill ki-y"></span><span class="ki-one"></span></span><span class="ki-val">×2.5</span></div>
+            <div class="ki-row" data-bar="a"><span class="ki-lab">Harvested area</span><span class="ki-track"><span
+                  class="ki-fill ki-a"></span><span class="ki-one"></span></span><span class="ki-val">×1.5</span></div>
+            <p class="ki-title">Share of world crop production by region</p>
+            <div class="ki-share-row"><span class="ki-yr">1961</span>
+              <div class="ki-stack"><i style="flex-grow:35.1;background:var(--r-asia)">35%</i><i
+                  style="flex-grow:30.4;background:var(--r-europe)">30%</i><i
+                  style="flex-grow:26.0;background:var(--r-americas)">26%</i><i
+                  style="flex-grow:7.5;background:var(--r-africa)">8%</i><i
+                  style="flex-grow:1.1;background:var(--r-oceania)"></i></div>
             </div>
-
-            <p class="ki-title">Where the world’s production comes from</p>
-            <div class="ki-share">
-              <div class="ki-share-row"><span class="ki-yr">1961</span>
-                <div class="ki-stack" role="img"
-                  aria-label="1961 share of world production: Asia 35%, Europe 30%, Americas 26%, Africa 8%, Oceania 1%">
-                  <i style="flex-grow:7.5;background:var(--r-africa)"></i><i
-                    style="flex-grow:26;background:var(--r-americas)">26%</i><i
-                    style="flex-grow:35.1;background:var(--r-asia)">35%</i><i
-                    style="flex-grow:30.4;background:var(--r-europe)">30%</i><i
-                    style="flex-grow:1.1;background:var(--r-oceania)"></i>
-                </div>
-              </div>
-              <div class="ki-share-row"><span class="ki-yr">2024</span>
-                <div class="ki-stack" role="img"
-                  aria-label="2024 share of world production: Asia 50%, Americas 27%, Africa 11%, Europe 11%, Oceania 1%">
-                  <i style="flex-grow:11;background:var(--r-africa)">11%</i><i
-                    style="flex-grow:26.7;background:var(--r-americas)">27%</i><i
-                    style="flex-grow:50.3;background:var(--r-asia)">50%</i><i
-                    style="flex-grow:10.7;background:var(--r-europe)">11%</i><i
-                    style="flex-grow:1.3;background:var(--r-oceania)"></i>
-                </div>
-              </div>
-              <ul class="ki-legend">
-                <li><i style="background:var(--r-africa)"></i>Africa</li>
-                <li><i style="background:var(--r-americas)"></i>Americas</li>
-                <li><i style="background:var(--r-asia)"></i>Asia</li>
-                <li><i style="background:var(--r-europe)"></i>Europe</li>
-                <li><i style="background:var(--r-oceania)"></i>Oceania</li>
-              </ul>
+            <div class="ki-share-row"><span class="ki-yr">1990</span>
+              <div class="ki-stack"><i style="flex-grow:42.2;background:var(--r-asia)">42%</i><i
+                  style="flex-grow:22.0;background:var(--r-europe)">22%</i><i
+                  style="flex-grow:26.7;background:var(--r-americas)">27%</i><i
+                  style="flex-grow:7.8;background:var(--r-africa)">8%</i><i
+                  style="flex-grow:1.3;background:var(--r-oceania)"></i></div>
             </div>
-            <p class="ki-note">Share of total tonnes, 209 countries. “All crops” yield is total tonnes ÷ total hectares
-              across all crops, a rough guide; single crops are cleaner.</p>
+            <div class="ki-share-row"><span class="ki-yr">2024</span>
+              <div class="ki-stack"><i style="flex-grow:50.3;background:var(--r-asia)">50%</i><i
+                  style="flex-grow:10.7;background:var(--r-europe)">11%</i><i
+                  style="flex-grow:26.7;background:var(--r-americas)">27%</i><i
+                  style="flex-grow:11.0;background:var(--r-africa)">11%</i><i
+                  style="flex-grow:1.3;background:var(--r-oceania)"></i></div>
+            </div>
+            <ul class="ki-legend">
+              <li><i style="background:var(--r-asia)"></i>Asia</li>
+              <li><i style="background:var(--r-europe)"></i>Europe</li>
+              <li><i style="background:var(--r-americas)"></i>Americas</li>
+              <li><i style="background:var(--r-africa)"></i>Africa</li>
+              <li><i style="background:var(--r-oceania)"></i>Oceania (1%)</li>
+            </ul>
+            <p class="ki-note">Totals over the 158 crops and 209 countries and areas in data/data.csv. Yield = total
+              production ÷ total harvested area.</p>
           </div>
         </div>
-
         <div class="pw">
           <div class="ki-impact">
             <article class="card">
-              <h3>Smarter land use</h3>
-              <p>Yield gains, not just new farmland, have helped feed a growing population. That matters for land use
-                and the environment.</p>
+              <h3>Food security</h3>
+              <p>Higher yields let crop output rise far faster than farmland, which is how supply kept growing.</p>
             </article>
             <article class="card">
-              <h3>Finding the gaps</h3>
-              <p>Regions with a small share of output (Africa produces about 11%) or low yields show where improvement
-                may still be possible.</p>
+              <h3>Environment</h3>
+              <p>Food grown on existing fields means less pressure to clear forests and natural habitats.</p>
             </article>
             <article class="card">
-              <h3>Better decisions</h3>
-              <p>Policymakers, researchers and farmers can compare countries and spot gaps to support food-security
-                planning.</p>
+              <h3>Policy</h3>
+              <p>Where yields are still low, raising them can add output without needing new land.</p>
             </article>
           </div>
         </div>
@@ -264,6 +263,8 @@
   </main>
 
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+
 </body>
 
 </html>

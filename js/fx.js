@@ -1,36 +1,39 @@
-// Tiny helpers for the four new pages (cover, objective, motivation, insight).
-// Standalone: needs no d3, no shared.js and no main.js, so it cannot clash with the existing pages.
-export const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// SHARED EFFECTS used by the info pages (cover, motivation, objective, insight).
+//   whenVisible(element, fn)  -> runs fn once, the first time the element scrolls into view
+//   countUp(element)          -> animates the number in data-count from 0 (honours reduced-motion)
+// Optional attributes on the counted element: data-decimals="1", data-prefix="$", data-suffix="%"
 
-/** Run fn once, the first time `el` is on screen. Pass the <section class="page">, not a "display: contents" root. */
-export function whenVisible(el, fn) {
-    if (!el) return;
-    if (!('IntersectionObserver' in window)) return fn();
+export function whenVisible(element, fn, threshold = 0.35) {
+    if (!element) return;
+    if (!('IntersectionObserver' in window)) { fn(); return; }
     const io = new IntersectionObserver(entries => {
         if (entries.some(e => e.isIntersecting)) { io.disconnect(); fn(); }
-    }, { threshold: 0.2 });
-    io.observe(el);
+    }, { threshold });
+    io.observe(element);
 }
 
-/** Count a number up from 0. Reads data-count (+ optional data-dec, data-prefix, data-suffix) from the element. */
-export function countUp(el, ms = 1100) {
-    const to = +el.dataset.count, dec = +(el.dataset.dec || 0);
-    const pre = el.dataset.prefix || '', suf = el.dataset.suffix || '';
-    const show = v => { el.textContent = pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf; };
-    if (reduceMotion) return show(to);
-    const t0 = performance.now();
-    const tick = now => {
-        const k = Math.min(1, (now - t0) / ms);
-        show(to * (1 - Math.pow(1 - k, 3)));          // ease-out
-        if (k < 1) requestAnimationFrame(tick);
+export function countUp(element, duration = 1400) {
+    const target = Number(element.dataset.count);
+    if (!Number.isFinite(target)) return;
+    const decimals = Number(element.dataset.decimals || 0);
+    const prefix = element.dataset.prefix || '', suffix = element.dataset.suffix || '';
+    const show = v => { element.textContent = prefix + v.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix; };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { show(target); return; }
+    const start = performance.now();
+    const step = now => {
+        const t = Math.min(1, (now - start) / duration);
+        show(target * (1 - Math.pow(1 - t, 3)));          // ease-out
+        if (t < 1) requestAnimationFrame(step); else show(target);
     };
-    requestAnimationFrame(tick);
+    requestAnimationFrame(step);
 }
 
-/** Fade the children marked .stg in one after another, the first time the page is seen. */
-export function stagger(page, root) {
-    if (!page || !root || reduceMotion) return;
-    root.querySelectorAll('.stg').forEach((el, i) => el.style.setProperty('--i', i));
+// stagger(page, root): items with class .stg inside root fade in one after another (CSS: .anim .stg / .anim.go .stg),
+// the first time the page scrolls into view. Without JS, or with reduced motion, everything is simply visible.
+export function stagger(page, root, selector = '.stg') {
+    if (!page || !root) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    root.querySelectorAll(selector).forEach((el, i) => { if (!el.style.getPropertyValue('--i')) el.style.setProperty('--i', i); });
     root.classList.add('anim');
-    whenVisible(page, () => requestAnimationFrame(() => root.classList.add('go')));
+    whenVisible(page, () => root.classList.add('go'), 0.2);
 }
