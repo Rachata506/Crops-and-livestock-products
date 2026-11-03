@@ -2,7 +2,7 @@
    Layout is in template() below; all visual styling is in page6.css. */
 (function (global) {
   'use strict';
-  const ALLOWED_COUNTRIES = ['China', 'India', 'Thailand', 'United States of America'];
+  const ALLOWED_COUNTRIES = ['China', 'China, mainland', 'India', 'Thailand', 'United States of America'];
   const SOURCE_MEASURES = {
     area: { title: 'Harvested Area', unit: 'ha', icon: '🌾' },
     yield: { title: 'Yield', unit: 't/ha', icon: '📈' },
@@ -32,11 +32,14 @@
   }
   function normalizeSource(raw) {
     const products = new Map();
-    if (raw.columns.includes('Area') && raw.columns.includes('Y1961')) {
-      const years = raw.columns.filter(key => /^Y\d{4}$/.test(key)).sort();
+    const china = raw.some(row => (row.country || row.Area) === 'China') ? 'China' : 'China, mainland';
+    const allowed = new Set([china, 'India', 'Thailand', 'United States of America']);
+    const columns = raw.columns || Object.keys(raw[0] || {});
+    if (columns.includes('Area') && columns.includes('Y1961')) {
+      const years = columns.filter(key => /^Y\d{4}$/.test(key)).sort();
       const records = new Map(), seen = new Set();
       for (const row of raw) {
-        if (!ALLOWED_COUNTRIES.includes(row.Area)) continue;
+        if (!allowed.has(row.Area)) continue;
         const [key, factor] = sourceMetric(row.Element, row.Unit);
         const sourceKey = JSON.stringify([row.Area, row.Item, key]);
         if (seen.has(sourceKey)) throw new Error('Duplicate source series for ' + row.Area + ' / ' + row.Item);
@@ -55,8 +58,8 @@
       return { rows: [...records.values()], products, isWide: true };
     }
     // Backward compatibility for the earlier cleaned crop CSV.
-    validate([], raw.columns, true);
-    const rows = raw.filter(row => ALLOWED_COUNTRIES.includes(row.country)).map(parseRow);
+    validate([], columns, true);
+    const rows = raw.filter(row => allowed.has(row.country)).map(parseRow);
     for (const row of rows) { if (!products.has(row.crop)) products.set(row.crop, { keys: new Set(['area', 'yield', 'production']), isTotal: false }); }
     return { rows, products, isWide: false };
   }
@@ -74,11 +77,11 @@
     if (!row.country || !row.crop || !String(row.year ?? '').trim() || !Number.isInteger(year)) throw new Error('Invalid country, crop or year.');
     return {
       country: row.country.trim(), code: String(row.code ?? ''), region: row.region ?? '', crop: row.crop.trim(), year,
-      area: numeric(row['area (ha)']), yield: numeric(row['yield (t/ha)']), production: numeric(row['production (tonnes)'])
+      area: numeric(Object.hasOwn(row, 'area (ha)') ? row['area (ha)'] : row.area), yield: numeric(Object.hasOwn(row, 'yield (t/ha)') ? row['yield (t/ha)'] : row.yield), production: numeric(Object.hasOwn(row, 'production (tonnes)') ? row['production (tonnes)'] : row.production)
     };
   }
   function validate(rows, columns, schemaOnly = false) {
-    if (!COLUMNS.every(c => columns.includes(c))) throw new Error('CSV column names do not match crops_clean.csv.');
+    if (!['country', 'crop', 'year'].every(c => columns.includes(c)) || ![['area (ha)', 'area'], ['yield (t/ha)', 'yield'], ['production (tonnes)', 'production']].every(names => names.some(name => columns.includes(name)))) throw new Error('Expected country, crop, year, area, yield and production columns.');
     if (schemaOnly) return;
     if (!rows.length) throw new Error('The CSV contains no records for the four selected countries.');
     const keys = new Set();
@@ -155,7 +158,7 @@
       <footer class="p6-note"><p data-role="source"></p>
         <details><summary>Data coverage and definitions</summary><p data-role="coverage"></p>
           <p>Harvested area is not total agricultural land. Units depend on the selected product. Crop yield kg/ha is converted to t/ha; animal counts in thousands are converted to animals or number; carcass weight g/animal is converted to kg/animal. Production in tonnes is separate from production in number. Missing values are never replaced with zero. A zero reference value has no percentage comparison. Percentage differences use the second country as the reference.</p>
-          <p>Country codes preserve FAOSTAT M49 codes (China: 159). Regions are dashboard groupings: Asia and Americas. The wide source file does not include observation-quality flags.</p>
+          <p>Country codes preserve FAOSTAT M49 codes. China mainland (156) and China aggregate (159) are distinct; only the available chosen series is displayed. Regions are dashboard groupings: Asia and Americas. The wide source file does not include observation-quality flags.</p>
         </details></footer>
       </div>`;
   }
@@ -184,7 +187,7 @@
         </svg>`;
     }
 
-    if (country === "China") {
+    if (country === "China" || country === "China, mainland") {
       return `<svg ${base}>
           <path fill="#df3038" d="M0 0h60v40H0z"/>
           <g fill="#ffe36a">
@@ -427,39 +430,8 @@
   function auto() { const root = document.getElementById('page6'); if (root && !root.__page6 && root.dataset.auto !== 'false') mountPage6({ root }); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auto, { once: true }); else auto();
 })(typeof window === 'undefined' ? globalThis : window);
-// The group main.js imports this entry point. Keep exactly one init export.
-export async function init(data, root) {
-  if (!root) return;
-  root.__page6?.destroy();
-  root.textContent = 'Looking for data.csv…';
-
-  // Both supported locations are relative to the project, not this page's URL.
-  const candidates = [
-    new URL('../../data.csv', import.meta.url).href,
-    new URL('../../data/data.csv', import.meta.url).href
-  ];
-
-  for (const url of candidates) {
-    try {
-      const response = await fetch(url, {
-        method: 'HEAD',
-        cache: 'no-store',
-        signal: AbortSignal.timeout(8000)
-      });
-      const type = response.headers.get('content-type') || '';
-      if (response.ok && !type.includes('text/html')) {
-        return globalThis.mountPage6({ root, dataUrl: url });
-      }
-    } catch (error) {
-      // Try the other supported location before displaying a clear file error.
-    }
-  }
-
-  const heading = document.createElement('h3');
-  heading.textContent = 'data.csv was not found';
-  const message = document.createElement('p');
-  message.textContent =
-    'Copy data.csv into the same folder as index.html, then refresh this page. ' +
-    'Keep the file name data.csv and open the project through Live Server.';
-  root.replaceChildren(heading, message);
+// Use the shared real data without downloading the large CSV twice.
+export function init(data, root) {
+  return globalThis.mountPage6({ root, dataRows: data,
+    dataUrl: new URL('../../data/data.csv', import.meta.url).href });
 }
