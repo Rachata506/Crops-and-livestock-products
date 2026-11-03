@@ -28,7 +28,7 @@
   }
 
   function render(rows) {
-    const root = document.getElementById("p3-root"), sec = document.getElementById("p3"), text = sec.querySelector(".text");
+    const root = document.getElementById("p3-root"), sec = document.getElementById("p3"), text = sec.querySelector(".text") || sec.querySelector("header");
     const q = s => sec.querySelector(s);
     const say = msg => { const t = document.getElementById("p3-takeaway"); if (t) t.textContent = msg; };
 

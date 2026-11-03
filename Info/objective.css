@@ -1,0 +1,102 @@
+/* OBJECTIVE page. Layout comes from the global split grid in style.css (header + .pl left, .pr right).
+   Only its own parts are styled here, all scoped to #objective. */
+#objective .pl>p {
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+#objective .ob-label {
+    margin: 28px 0 12px;
+    font-size: 16px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink2);
+}
+
+#objective .ob-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#objective .ob-chips li {
+    padding: 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    background: var(--surface);
+    font-size: 18px;
+    color: var(--ink2);
+}
+
+#objective .ob-qs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#objective .ob-qs li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+}
+
+/* 5th card spans the full row */
+#objective .ob-q {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    padding: 20px 22px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+
+#objective .ob-q:hover {
+    border-color: var(--ink2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+}
+
+#objective .ob-n {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    font: 700 17px/34px var(--font);
+    text-align: center;
+}
+
+#objective .ob-q b {
+    font-size: 23px;
+    line-height: 1.3;
+}
+
+#objective .ob-q small {
+    font-size: 17px;
+    color: var(--ink2);
+}
+
+/* staggered entrance (class .anim/.go are added by js/fx.js; without JS everything is simply visible) */
+#objective .anim .stg {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .5s ease, transform .5s ease;
+    transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+#objective .anim.go .stg {
+    opacity: 1;
+    transform: none;
+}
+
+@media (max-width: 560px) {
+    #objective .ob-qs {
+        grid-template-columns: 1fr;
+    }
+}

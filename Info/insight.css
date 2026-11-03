@@ -1,0 +1,200 @@
+/* KEY INSIGHT & POTENTIAL IMPACT page. Layout comes from the global split grid in style.css
+   (header + .pl left, .pr right, .pw full width). Only its own parts are styled here, all scoped to #insight. */
+#insight {
+    /* same region colours as REGION_COLORS in js/shared.js */
+    --r-africa: #d9a441;
+    --r-americas: #2f6b3a;
+    --r-asia: #b5543a;
+    --r-europe: #4a7c8c;
+    --r-oceania: #7b4b6e;
+}
+
+#insight .pl>p {
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+#insight .pl>p.ki-cap {
+    margin: 18px 0 0;
+    font-size: 19px;
+    color: var(--ink2);
+    min-height: 3.2em;
+}
+
+#insight .ki-card {
+    padding: 22px 24px;
+}
+
+#insight .ki-title {
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+#insight .ki-title small {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--faint);
+}
+
+#insight .ki-title:not(:first-child) {
+    margin-top: 26px;
+}
+
+/* growth bars */
+#insight .ki-row {
+    display: grid;
+    grid-template-columns: 170px 1fr 62px;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 12px;
+}
+
+#insight .ki-lab {
+    font-size: 18px;
+    color: var(--ink2);
+}
+
+#insight .ki-track {
+    position: relative;
+    display: block;
+    height: 20px;
+    border-radius: 4px;
+    background: var(--line);
+}
+
+#insight .ki-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--w, 0%);
+    border-radius: 4px;
+    transition: width .8s cubic-bezier(.16, 1, .3, 1);
+}
+
+#insight .ki-p {
+    background: var(--ink);
+}
+
+#insight .ki-y {
+    background: var(--green);
+}
+
+#insight .ki-a {
+    background: var(--gold);
+}
+
+#insight .ki-one {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    left: calc(100% / 6.5);
+    width: 2px;
+    background: var(--faint);
+}
+
+/* the 1x line */
+#insight .ki-val {
+    font-size: 21px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+/* share bars */
+#insight .ki-share-row {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 10px;
+}
+
+#insight .ki-yr {
+    font-size: 17px;
+    color: var(--ink2);
+}
+
+#insight .ki-stack {
+    display: flex;
+    height: 32px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#insight .ki-stack i {
+    flex-basis: 0;
+    min-width: 0;
+    font: 600 15px/32px var(--font);
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#insight .ki-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 10px 0 0 64px;
+    padding: 0;
+    list-style: none;
+    font-size: 16px;
+    color: var(--ink2);
+}
+
+#insight .ki-legend i {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    border-radius: 2px;
+}
+
+#insight .ki-note {
+    margin: 16px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--faint);
+}
+
+/* potential impact cards */
+#insight .ki-impact {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+#insight .ki-impact .card {
+    padding: 20px 22px;
+}
+
+#insight .ki-impact h3 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    color: var(--ink);
+}
+
+#insight .ki-impact p {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink2);
+}
+
+@media (max-width: 800px) {
+    #insight .ki-impact {
+        grid-template-columns: 1fr;
+    }
+
+    #insight .ki-row {
+        grid-template-columns: 120px 1fr 52px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #insight .ki-fill {
+        transition: none;
+    }
+}
