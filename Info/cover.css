@@ -1,0 +1,57 @@
+/* COVER page. Uses the global tokens and classes from style.css (.page, .stats, .stat, .btn, --ink, --gold ...).
+   Every rule below is scoped to #cover, so nothing else on the site is affected. */
+#cover {
+    background:
+        radial-gradient(760px 420px at 88% 16%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 70%),
+        radial-gradient(640px 380px at 6% 94%, color-mix(in srgb, var(--green) 11%, transparent), transparent 70%),
+        var(--bg);
+}
+
+#cover .cv-eyebrow {
+    margin: 0 0 10px;
+    font-size: 13px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink2);
+}
+
+#cover .cv-title {
+    margin: 0 0 22px;
+    max-width: 15ch;
+    font: 700 clamp(40px, 6.2vw, 84px)/1.04 var(--font);
+    letter-spacing: -.025em;
+    color: var(--ink);
+}
+
+#cover .cv-rule {
+    width: 64px;
+    height: 4px;
+    margin: 0 0 24px;
+    border-radius: 2px;
+    background: var(--gold);
+}
+
+#cover .cv-sub {
+    margin: 0;
+    max-width: 640px;
+    font-size: clamp(18px, 2vw, 24px);
+    line-height: 1.5;
+    color: var(--ink2);
+}
+
+#cover .cv-stats {
+    margin: 36px 0 32px;
+}
+
+#cover .cv-stats .stat b {
+    color: var(--green);
+    font-variant-numeric: tabular-nums;
+}
+
+#cover .cv-source {
+    margin: 28px 0 0;
+    max-width: 640px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--faint);
+}
