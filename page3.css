@@ -1,0 +1,108 @@
+/* PAGE 3 - Trends Over Time. Layout, controls, legend pills and tooltip come from style.css (shared by every page).
+   Only the chart details are here. */
+#p3 .intro b {
+    color: var(--ink);
+}
+
+/* page 3: text block sits at the far left of the page (other pages keep it next to the chart) */
+#p3.page:has(> header)>header,
+#p3 .pl {
+    justify-self: start;
+    max-width: 540px;
+}
+
+/* also neutralise the dark pill that .btn gets in style.css, in case an older page3.js still uses class="btn" */
+#p3 .btn {
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-weight: 400;
+    text-decoration: none;
+    filter: none;
+}
+
+#p3 .p3-btn,
+#p3 .btn {
+    font-size: 17px;
+}
+
+#p3 .controls select {
+    max-width: 260px;
+}
+
+#p3 .p3-title {
+    font-size: 16px;
+    color: var(--ink2);
+    margin: 0 0 6px;
+}
+
+#p3 .chart svg,
+#p3 .context svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+}
+
+#p3 .context {
+    margin-top: 2px;
+}
+
+#p3 .hint {
+    font-size: 13.5px;
+    color: var(--faint);
+    margin: 4px 0 0;
+}
+
+#p3 .axis text,
+#p3 .ylab {
+    fill: var(--ink2);
+    font-size: 13.5px;
+}
+
+#p3 .gridl line {
+    stroke: var(--line);
+    stroke-dasharray: 2 3;
+}
+
+#p3 .gridl path {
+    display: none;
+}
+
+#p3 .layer {
+    transition: opacity .15s;
+}
+
+#p3 .layer.dim {
+    opacity: .15;
+}
+
+#p3 .selection {
+    fill: var(--c1);
+    fill-opacity: .15;
+    stroke: var(--c1);
+}
+
+#p3 .handle {
+    fill: var(--c1);
+    fill-opacity: .6;
+}
+
+/* rows inside the shared #tooltip */
+#tooltip .p3r {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 3px;
+}
+
+#tooltip .p3r i {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    margin-right: 6px;
+}

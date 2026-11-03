@@ -391,14 +391,9 @@
       root.querySelectorAll('select,[data-range],[data-role="reset"]').forEach(control => control.disabled = true);
       try {
         d3 = await getD3(d3Url);
-        let raw;
-        if (Array.isArray(options.dataRows) && options.dataRows.length && !options.dataRows.isDemo) {
-          raw = options.dataRows;
-        } else {
-          const response = await fetch(dataUrl, { signal: controller.signal });
-          if (!response.ok) throw new Error(`CSV request failed (${response.status}).`);
-          raw = d3.csvParse((await response.text()).replace(/^\uFEFF/, ''));
-        }
+        const response = await fetch(dataUrl, { signal: controller.signal });
+        if (!response.ok) throw new Error(`CSV request failed (${response.status}).`);
+        const raw = d3.csvParse((await response.text()).replace(/^\uFEFF/, ''));
         const normalized = normalizeSource(raw); rows = normalized.rows; productMeta = normalized.products; wideSource = normalized.isWide;
         if (!rows.length) throw new Error('No data for the four selected countries.');
         if (destroyed) return;

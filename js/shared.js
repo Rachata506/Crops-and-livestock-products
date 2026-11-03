@@ -1,4 +1,5 @@
 // SHARED: colors, formatters, data loader, tooltip. Import from here, don't redefine.
+export const CSV_URL = 'data/cleaned_data.csv';
 export const REGION_COLORS = { Africa: '#d9a441', Americas: '#2f6b3a', Asia: '#b5543a', Europe: '#4a7c8c', Oceania: '#7b4b6e' };
 const CROP_PALETTE = ['#d9a441', '#8aa84a', '#e07b39', '#5b6b2f', '#7a4e2d', '#3f8f87', '#b5543a', '#7b4b6e', '#2f5d8a', '#a89f6b'];
 export const cropColor = d3.scaleOrdinal().range(CROP_PALETTE); // domain set in loadData: same color on every page
@@ -23,7 +24,17 @@ export const tooltip = {
 // Schema: country, code, region, crop, year, area (ha), yield (t/ha), production (tonnes)
 export async function loadData() {
     let data, demo = false;
-    try { data = await d3.csv('data/crops_clean.csv', d3.autoType); if (!data.length) throw 0; }
+    try {
+        data = await d3.csv(CSV_URL, d3.autoType);
+        if (!data.length) throw 0;
+        // Normalize spaced column names → short aliases so all pages use d.production, d.area, d.yield
+        data = data.map(d => ({
+            country: d.country, code: d.code, region: d.region, crop: d.crop, year: d.year,
+            area: d['area (ha)'] ?? d.area,
+            yield: d['yield (t/ha)'] ?? d.yield,
+            production: d['production (tonnes)'] ?? d.production,
+        }));
+    }
     catch (e) { data = demoData(); demo = true; }
     cropColor.domain(Array.from(new Set(data.map(d => d.crop))).sort());
     data.isDemo = demo;
@@ -43,4 +54,24 @@ function demoData() {
         }
     }
     return rows;
+}
+
+export function yearControl(selector, years, onChange) {
+    const el = d3.select(selector);
+    el.html('');
+    const slider = el.append('input').attr('type', 'range')
+        .attr('min', 0).attr('max', years.length - 1).attr('value', years.length - 1);
+    const label = el.append('span').style('margin', '0 10px').text(years[years.length - 1]);
+    const play = el.append('button').attr('type', 'button').text('▶ Play');
+    let timer = null;
+    const set = i => { label.text(years[i]); onChange(years[i]); };
+    slider.on('input', function () { set(+this.value); });
+    play.on('click', () => {
+        if (timer) { clearInterval(timer); timer = null; play.text('▶ Play'); return; }
+        play.text('⏸ Pause');
+        timer = setInterval(() => {
+            const i = (+slider.property('value') + 1) % years.length;
+            slider.property('value', i); set(i);
+        }, 400);
+    });
 }

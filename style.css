@@ -1,134 +1,408 @@
-/* SHARED THEME: everyone uses these variables, no hard-coded colors in page code */
+/* SHARED THEME - every page uses the same layout:
+   text + controls on the left, the visual on the right, one idea per screen, dot navigation on the right edge.
+   Page-specific rules live in pageN.css / the page's own file and only use the tokens below. */
 :root {
-    /* Surfaces: white / ivory */
-    --bg: #fffef8;
-    --surface: #ffffff;
-    --line: #e6e2d3;
-    /* Text */
-    --ink: #1f2933;
-    --muted: #5f6b76;
-    /* UI accents (nav, headings, buttons) */
+    --bg: #fbf9f5;
+    /* page background */
+    --surface: #fbfaf7;
+    /* panels / inputs (flat, same as the page) */
+    --line: #e6e3dc;
+    /* hairlines, borders, grid */
+    --ink: #1c1c1a;
+    /* headings, selected buttons, key numbers */
+    --ink2: #55534e;
+    /* body text */
+    --muted: #55534e;
+    /* secondary text (kept equal to --ink2 so older rules stay readable) */
+    --faint: #9a978f;
+    /* hints, inactive dots */
+    --hl: #e9e6dd;
+    /* highlighted words */
     --green: #1f6f4a;
+    /* data accent (maps, ramps) - not used for page chrome */
     --gold: #e69f00;
     --soil: #8c564b;
     --sky: #0072b2;
-    --radius: 10px;
-    --font: "Inter", "Segoe UI", system-ui, sans-serif;
-    --serif: Georgia, "Times New Roman", serif;
+    --radius: 8px;
+    --font: "Inter", "Segoe UI", -apple-system, system-ui, sans-serif;
+    --serif: var(--font);
+    /* categorical colours used by page 3 (colour-blind checked) */
+    --c1: #2a78d6;
+    --c2: #eb6834;
+    --c3: #1baf7a;
+    --c4: #eda100;
+    --c5: #e87ba4;
+    --c6: #008300;
+    --c7: #6250d6;
+    --c-other: #9a978f;
 }
 
 * {
     box-sizing: border-box
 }
 
+html {
+    scroll-behavior: smooth
+}
+
 body {
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 16px/1.55 var(--font)
+    font: 17px/1.55 var(--font);
 }
 
-nav {
-    position: sticky;
+/* reading progress bar */
+#progress {
+    position: fixed;
     top: 0;
-    z-index: 10;
+    left: 0;
+    height: 4px;
+    width: 0;
+    background: var(--gold);
+    z-index: 30;
+}
+
+/* dot navigation (right edge) */
+#dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
-    gap: 18px;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 24px;
-    background: var(--green);
-    color: #fff
+    flex-direction: column;
+    gap: 14px;
+    z-index: 20;
 }
 
-nav strong {
-    font-family: var(--serif);
-    margin-right: auto;
-    font-size: 18px
+#dots a {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--faint);
+    opacity: .5;
+    display: block;
+    transition: .2s;
 }
 
-nav a {
-    color: #e8f0e2;
-    text-decoration: none;
-    font-size: 14px;
-    padding: 4px 0;
-    border-bottom: 2px solid transparent
+#dots a:hover {
+    opacity: 1;
 }
 
-nav a.active,
-nav a:hover {
-    color: #fff;
-    border-color: var(--gold)
+#dots a.active {
+    opacity: 1;
+    background: var(--ink);
+    transform: scale(1.5);
 }
 
 #demo-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 25;
     background: var(--gold);
     padding: 6px 24px;
-    font-size: 13px
+    font-size: 13px;
+    text-align: center;
 }
 
+#demo-banner[hidden] {
+    display: none;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    text-align: center;
+    padding: 6px 16px;
+    font-size: 12px;
+    color: var(--faint);
+    background: rgba(251, 250, 247, .9);
+    pointer-events: none;
+}
+
+/* ---------- one screen per page ---------- */
 .page {
-    max-width: 1040px;
-    margin: 0 auto;
-    padding: 56px 24px;
-    min-height: 70vh;
-    scroll-margin-top: 50px;
-    border-bottom: 1px solid var(--line)
+    min-height: 100vh;
+    position: relative;
+    background: var(--bg);
+    padding: 48px 90px 56px 56px;
+}
+
+/* pages with a <header> (title + takeaway) use the split layout:
+     header          -> left column, top
+     .pl             -> left column (intro text, controls)
+     .pr             -> right column (the chart / map / panels)
+     .pw             -> full width underneath (optional)
+   The page's root div uses display: contents, so .pl / .pr / .pw sit directly in this grid. */
+.page:has(> header) {
+    display: grid;
+    grid-template-columns: minmax(280px, 5fr) 7fr;
+    grid-template-rows: auto auto auto;
+    column-gap: 48px;
+    align-content: center;
+    align-items: start;
+}
+
+.page:has(> header)>header {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+    justify-self: start;
+    width: 100%;
+    max-width: 520px;
+}
+
+.page:has(> header)>[id$="-root"] {
+    display: contents;
+}
+
+.page .pl {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    justify-self: start;
+    width: 100%;
+    max-width: 520px;
+    min-width: 0;
+}
+
+.page .pr {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    min-width: 0;
+}
+
+.page .pw {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    min-width: 0;
+    margin-top: 28px;
+}
+
+/* a page without .pl/.pr just uses the root as the right column */
+.page:has(> header)>[id$="-root"]:not(:has(.pr)):not(:has(.pl)) {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    min-width: 0;
 }
 
 .page h2 {
-    font-family: var(--serif);
-    font-size: 30px;
-    margin: 0 0 4px;
-    color: var(--green)
+    font: 700 36px/1.2 var(--font);
+    margin: 0 0 16px;
+    color: var(--ink);
+    letter-spacing: -.01em;
 }
 
 .takeaway {
-    color: var(--muted);
-    font-style: italic;
-    margin: 0 0 20px;
-    border-left: 3px solid var(--gold);
-    padding-left: 10px
+    color: var(--ink);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 14px;
+    border: 0;
+    padding: 0;
+    max-width: none;
+    line-height: 1.5;
+}
+
+.intro,
+.page .pl>p {
+    color: var(--ink2);
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+.hl {
+    background: var(--hl);
+    color: var(--ink);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+/* wide pages (hero / about) */
+.page:not(:has(> header)) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.page:not(:has(> header))>* {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 1000px) {
+    .page {
+        padding: 32px 44px 48px 20px;
+    }
+
+    .page:has(> header) {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        row-gap: 20px;
+    }
+
+    .page:has(> header)>header,
+    .page .pl,
+    .page .pr,
+    .page .pw,
+    .page:has(> header)>[id$="-root"]:not(:has(.pr)):not(:has(.pl)) {
+        grid-column: 1;
+        grid-row: auto;
+        justify-self: stretch;
+        max-width: none;
+    }
+}
+
+/* slide entrance (class added by main.js) */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .6s cubic-bezier(.16, 1, .3, 1), transform .6s cubic-bezier(.16, 1, .3, 1);
+}
+
+.reveal.in {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* ---------- shared controls ---------- */
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 10px 0 0;
+    font-size: 17px;
+}
+
+.controls .row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.controls label {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 17px;
+    color: var(--ink2);
+}
+
+select,
+button {
+    font: inherit;
+    font-size: 17px;
+    line-height: 1.4;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+}
+
+select:hover,
+button:hover {
+    border-color: var(--ink2);
+}
+
+select:focus-visible,
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
+input[type="range"] {
+    accent-color: var(--ink);
+}
+
+.seg {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.seg button {
+    border: 0;
+    border-radius: 0;
+    padding: 8px 16px;
+    color: var(--ink2);
+}
+
+.seg button+button {
+    border-left: 1px solid var(--line);
+}
+
+.seg button.on {
+    background: var(--ink);
+    color: var(--bg);
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    margin: 10px 0 0;
+}
+
+.legend button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    padding: 5px 14px;
+    border-radius: 18px;
+}
+
+.legend button.off {
+    color: var(--faint);
+    text-decoration: line-through;
+}
+
+.legend button.off i {
+    background: transparent !important;
+    border: 1.5px solid var(--faint);
+}
+
+.legend i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
 }
 
 .card {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 16px
-}
-
-.controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 14px
-}
-
-.controls label {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    color: var(--muted)
-}
-
-select,
-button {
-    font: inherit;
-    font-size: 14px;
-    padding: 5px 10px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    background: #fff;
-    color: var(--ink);
-    cursor: pointer
-}
-
-button:hover,
-select:hover {
-    border-color: var(--green)
+    padding: 16px;
 }
 
 .placeholder {
@@ -136,72 +410,488 @@ select:hover {
     border-radius: var(--radius);
     padding: 48px 24px;
     text-align: center;
-    color: var(--muted);
-    background: var(--surface)
-}
-
-.placeholder h3 {
-    margin: 0 0 6px;
-    color: var(--soil)
-}
-
-.legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 10px 0
-}
-
-.legend button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border-radius: 99px
-}
-
-.legend button.off {
-    opacity: .35;
-    text-decoration: line-through
-}
-
-.legend i {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    display: inline-block
+    color: var(--ink2);
 }
 
 .tooltip {
     position: fixed;
     pointer-events: none;
     background: var(--ink);
-    color: #fff;
+    color: var(--bg);
     padding: 8px 10px;
     border-radius: 6px;
-    font-size: 13px;
-    z-index: 20;
-    max-width: 260px
+    font-size: 14px;
+    line-height: 1.45;
+    z-index: 40;
+    max-width: 280px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+}
+
+.tooltip[hidden] {
+    display: none;
 }
 
 svg {
     width: 100%;
     height: auto;
-    display: block
+    display: block;
 }
 
 .axis text {
-    fill: var(--muted);
-    font-size: 12px
+    fill: var(--ink2);
+    font-size: 12px;
 }
 
 .axis path,
 .axis line {
-    stroke: var(--line)
+    stroke: var(--line);
 }
 
-footer {
-    text-align: center;
-    padding: 24px;
+/* ---------- page 1 hero (shared helpers) ---------- */
+#p1 h1 {
+    font: 700 clamp(36px, 5vw, 64px)/1.08 var(--font);
+    margin: 8px 0 20px;
+    color: var(--ink);
+    letter-spacing: -.02em;
+}
+
+#p1 .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .14em;
     font-size: 13px;
-    color: var(--muted)
+    color: var(--ink2);
+    margin: 0;
+}
+
+#p1 .lead {
+    font-size: 20px;
+    max-width: 720px;
+    color: var(--ink2);
+}
+
+#p1 .hint {
+    color: var(--faint);
+    font-size: 14px;
+}
+
+.stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin: 32px 0;
+}
+
+.stat b {
+    display: block;
+    font: 700 44px/1 var(--font);
+    color: var(--ink);
+}
+
+.stat span {
+    font-size: 14px;
+    color: var(--ink2);
+}
+
+.btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 22px;
+    border-radius: 99px;
+    text-decoration: none;
+    font-weight: 600;
+    border: 0;
+}
+
+.btn:hover {
+    filter: brightness(1.2);
+}
+
+/* ---------- Page 4. Layout comes from the split grid above; only its own parts are styled here. ---------- */
+#p4 .p4-dashboard {
+    display: contents;
+}
+
+#p4 .p4-intro {
+    margin: 0 0 14px;
+    color: var(--ink2);
+}
+
+#p4 .p4-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 8px 0 14px;
+}
+
+#p4 .p4-controls label {
+    display: grid;
+    gap: 6px;
+    color: var(--ink2);
+    font-size: 15px;
+}
+
+#p4 select {
+    max-width: 100%;
+    min-height: 40px;
+    background: var(--surface);
+}
+
+#p4 .p4-crop-field select {
+    width: 100%;
+}
+
+#p4 .p4-time {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px 16px;
+    margin: 6px 0 14px;
+}
+
+#p4 .p4-time label {
+    min-width: 0;
+    color: var(--ink2);
+    font-size: 15px;
+    display: grid;
+    gap: 4px;
+    grid-column: 1 / -1;
+}
+
+#p4 .p4-time input {
+    display: block;
+    width: 100%;
+    margin: 6px 0 0;
+}
+
+#p4 .p4-play {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+    min-height: 40px;
+    min-width: 96px;
+}
+
+#p4 .p4-year {
+    margin-left: 8px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+#p4 .p4-status {
+    color: var(--faint);
+    font-size: 13px;
+}
+
+#p4 .p4-time-ends {
+    display: flex;
+    justify-content: space-between;
+    color: var(--faint);
+    font-size: 12px;
+}
+
+#p4 h3 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+#p4 .p4-subtitle,
+#p4 .p4-note {
+    color: var(--ink2);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 4px 0 10px;
+}
+
+#p4 .p4-takeaway {
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+    margin: 14px 0 0;
+    font-weight: 600;
+}
+
+#p4 .p4-bar-chart,
+#p4 .p4-history-chart,
+#p4 .p4-map {
+    min-width: 0;
+    position: relative;
+}
+
+#p4 .p4-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+#p4 .p4-chart text {
+    fill: var(--ink);
+    font: 12px var(--font);
+}
+
+#p4 .p4-chart .domain,
+#p4 .p4-chart .tick line {
+    stroke: var(--line);
+}
+
+#p4 .p4-chart .p4-grid .domain {
+    display: none;
+}
+
+#p4 .p4-chart .p4-grid line {
+    stroke: var(--line);
+}
+
+#p4 .p4-support {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 30px;
+    border-top: 1px solid var(--line);
+    margin-top: 24px;
+    padding-top: 24px;
+}
+
+#p4 .p4-support>section {
+    min-width: 0;
+}
+
+#p4 .p4-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin: 12px 0;
+}
+
+#p4 .p4-legend button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    background: transparent;
+    border-radius: 0;
+    padding: 4px 0;
+    text-align: left;
+    font-size: 14px;
+}
+
+#p4 .p4-legend button[aria-pressed="false"] {
+    opacity: .4;
+    text-decoration: line-through;
+}
+
+#p4 .p4-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 5px;
+    flex-shrink: 0;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+#p4 .p4-legend .p4-swatch {
+    margin-right: 0;
+}
+
+#p4 .p4-map .p4-country {
+    stroke: var(--bg);
+    stroke-width: .6;
+}
+
+#p4 .p4-muted-key {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: var(--line);
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+#p4 .p4-tooltip {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    padding: 10px 12px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.7;
+    max-width: min(360px, 100%);
+    box-sizing: border-box;
+}
+
+#p4 .p4-tooltip[hidden] {
+    display: none;
+}
+
+#p4 .p4-tip-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#p4 .p4-tip-value {
+    margin-left: auto;
+    padding-left: 12px;
+    white-space: nowrap;
+}
+
+#p4 .p4-tip-year {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+#p4 details {
+    margin: 16px 0 0;
+}
+
+#p4 summary {
+    cursor: pointer;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 15px;
+}
+
+#p4 .p4-table-wrap {
+    overflow-x: auto;
+    margin-top: 12px;
+}
+
+#p4 table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+#p4 th,
+#p4 td {
+    text-align: left;
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+}
+
+#p4 th {
+    color: var(--ink2);
+    font-weight: 600;
+}
+
+#p4 .p4-number {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#p4 .p4-source {
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    margin-top: 24px;
+}
+
+#p4 .p4-error {
+    border-left: 3px solid var(--soil);
+    padding: 12px;
+    background: var(--surface);
+}
+
+#p4 .p4-empty {
+    padding: 28px 0;
+    color: var(--ink2);
+}
+
+#p4 .p4-content[hidden],
+#p4 .p4-loading[hidden] {
+    display: none;
+}
+
+@media (max-width: 850px) {
+    #p4 .p4-support {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 520px) {
+    #p4 .p4-time {
+        gap: 8px 10px;
+    }
+
+    #p4 .p4-status {
+        display: none;
+    }
+
+    #p4 .p4-tip-row {
+        flex-wrap: wrap;
+    }
+}
+
+/* ---------- one text size on every page (left-column text and controls) ---------- */
+#p4 .p4-intro {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+#p4 .p4-controls label,
+#p4 .p4-time label {
+    font-size: 17px;
+}
+
+#p4 .p4-takeaway {
+    font-size: 18px;
+}
+
+#p4 .p4-play {
+    font-size: 17px;
+}
+
+#p5 .pl .insight p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+#p5 .pl .insight h2 {
+    font-size: 22px;
+}
+
+#p5 .pl .insight .note {
+    font-size: 15px;
+}
+
+#p5 .pl .filter-panel label {
+    font-size: 17px;
+}
+
+#p5 .pl .filter-panel select {
+    font-size: 17px;
+    padding: 8px 12px;
+}
+
+#p5 .pl .small {
+    font-size: 15px;
+}
+
+#p6 .pl .p6-hero p {
+    font-size: 18px;
+}
+
+#p6 .pl label {
+    font-size: 16px;
+}
+
+#p6 .pl select {
+    font-size: 17px;
+}
+
+#p6 .pl h3 {
+    font-size: 20px;
+}
+
+#p6 .pl .p6-presets button {
+    font-size: 15px;
+}
+
+#p6 .pl .p6-note {
+    font-size: 15px;
 }
