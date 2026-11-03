@@ -1,5 +1,5 @@
 // SHARED: colors, formatters, data loader, tooltip. Import from here, don't redefine.
-export const CSV_URL = 'data/cleaned_data.csv';
+export const CSV_URL = 'data/data.csv';
 export const REGION_COLORS = { Africa: '#d9a441', Americas: '#2f6b3a', Asia: '#b5543a', Europe: '#4a7c8c', Oceania: '#7b4b6e' };
 const CROP_PALETTE = ['#d9a441', '#8aa84a', '#e07b39', '#5b6b2f', '#7a4e2d', '#3f8f87', '#b5543a', '#7b4b6e', '#2f5d8a', '#a89f6b'];
 export const cropColor = d3.scaleOrdinal().range(CROP_PALETTE); // domain set in loadData: same color on every page
