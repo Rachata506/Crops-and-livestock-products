@@ -138,15 +138,16 @@
           <label>To<select data-role="to" disabled></select></label>
           <p class="p6-note" data-role="range-note"></p></div>
       </section>
+      <section class="p6-box p6-profile"><h3 data-role="profile-title">Country Profile</h3><p data-role="profile-subtitle"></p>
+        <div data-role="profile-chart" class="p6-chart"></div>
+        <p class="p6-note" data-role="profile-note"></p></section>
       </div>
       <div class="pr">
       <p data-role="status" class="p6-status" role="status">Loading data…</p>
       <button type="button" data-role="retry" hidden>Retry loading</button>
       <p data-role="summary" class="p6-summary" aria-live="polite"></p>
       <div data-role="cards" class="p6-cards"></div>
-      <section class="p6-box p6-profile"><h3 data-role="profile-title">Country Profile</h3><p data-role="profile-subtitle"></p>
-        <div data-role="profile-chart" class="p6-chart"></div>
-        <p class="p6-note" data-role="profile-note"></p></section>
+
       <div class="p6-toolbar"><div><h2>Explore the comparison</h2><p>One year in detail. The full story over time.</p></div>
         <label>Chart metric<select data-role="metric" disabled><option value="yield">Yield (t/ha)</option><option value="production">Production (tonnes)</option><option value="area">Harvested Area (ha)</option></select></label></div>
       <div data-role="legend" class="p6-legend"></div>
@@ -391,9 +392,14 @@
       root.querySelectorAll('select,[data-range],[data-role="reset"]').forEach(control => control.disabled = true);
       try {
         d3 = await getD3(d3Url);
-        const response = await fetch(dataUrl, { signal: controller.signal });
-        if (!response.ok) throw new Error(`CSV request failed (${response.status}).`);
-        const raw = d3.csvParse((await response.text()).replace(/^\uFEFF/, ''));
+        let raw;
+        if (Array.isArray(options.dataRows) && options.dataRows.length && !options.dataRows.isDemo) {
+          raw = options.dataRows;
+        } else {
+          const response = await fetch(dataUrl, { signal: controller.signal });
+          if (!response.ok) throw new Error(`CSV request failed (${response.status}).`);
+          raw = d3.csvParse((await response.text()).replace(/^\uFEFF/, ''));
+        }
         const normalized = normalizeSource(raw); rows = normalized.rows; productMeta = normalized.products; wideSource = normalized.isWide;
         if (!rows.length) throw new Error('No data for the four selected countries.');
         if (destroyed) return;
@@ -430,8 +436,8 @@
   function auto() { const root = document.getElementById('page6'); if (root && !root.__page6 && root.dataset.auto !== 'false') mountPage6({ root }); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auto, { once: true }); else auto();
 })(typeof window === 'undefined' ? globalThis : window);
-// Use the shared real data without downloading the large CSV twice.
+// Read Page 6's authoritative CSV independently of the shared demo/legacy loader.
 export function init(data, root) {
-  return globalThis.mountPage6({ root, dataRows: data,
+  return globalThis.mountPage6({ root,
     dataUrl: new URL('../../data/data.csv', import.meta.url).href });
 }
