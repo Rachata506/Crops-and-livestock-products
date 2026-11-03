@@ -394,7 +394,7 @@ export async function init(data, root) {
     }
   
     try {
-      const response = await fetch("/data_page5/agriculture.json");
+      const response = await fetch("./data_page5/agriculture.json");
   
       if (!response.ok) {
         throw new Error(`Cannot load data: HTTP ${response.status}`);

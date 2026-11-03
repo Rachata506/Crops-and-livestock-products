@@ -8,7 +8,7 @@
   if (typeof d3 === "undefined") { console.error("[page3] d3 did not load - the d3 <script> must come before this file"); return; }
 
   // paths tried in order (relative to index.html). Put data.csv in ONE of these places.
-  const URLS = ["data/data.csv", "data.csv", "/data/data.csv", "/data.csv", "data/cleaned_data.csv", "data/page3_data.csv", "page3_data.csv"];
+  const URLS = ["./data/data.csv", "./data.csv", "./data/data.csv", "./data.csv", "./data/cleaned_data.csv", "./data/page3_data.csv", "./page3_data.csv"];
   const REGION_ORDER = ["Asia", "Americas", "Europe", "Africa", "Oceania"];
   const REGION_COLOR = { Asia: "var(--c1)", Americas: "var(--c2)", Europe: "var(--c3)", Africa: "var(--c4)", Oceania: "var(--c5)" };
   const CROP_COLOR = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)", "var(--c5)", "var(--c6)", "var(--c7)"];
