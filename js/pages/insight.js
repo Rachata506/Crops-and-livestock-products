@@ -1,31 +1,86 @@
-// KEY INSIGHT page behaviour: the crop buttons switch the three growth bars (1961 = 1x).
-// The numbers below are fixed history (1961 -> 2024) computed from data/data.csv, so nothing is fetched here.
-//   production x = P2024 / P1961      area x = A2024 / A1961      yield x = (P2024 / A2024) / (P1961 / A1961)
-//   (P = sum of tonnes, A = sum of hectares over the countries in the file)
+// KEY INSIGHT page: one finding per question page of the project (pages 2–6).
+// Each button switches the bars and the caption. All numbers are fixed history (1961 -> 2024)
+// computed from data/data.csv, so nothing is fetched here:
+//   production = sum of tonnes, area = sum of hectares; growth "×" = value 2024 / value 1961;
+//   yield growth = (P2024 / A2024) / (P1961 / A1961).
 import { whenVisible } from '../fx.js';
 
-const STATS = {
-    all: { label: 'All crops', p: 3.90, a: 1.54, y: 2.54 },
-    wheat: { label: 'Wheat', p: 3.59, a: 1.07, y: 3.34 },
-    rice: { label: 'Rice', p: 3.80, a: 1.49, y: 2.54 },
-    maize: { label: 'Maize', p: 5.94, a: 1.99, y: 2.99 },
-};
-const SCALE = 6.5;                       // a bar is value / SCALE wide; keep equal to the 1x marker in insight.css (100% / 6.5)
+const REGION = { Asia: 'var(--r-asia)', Americas: 'var(--r-americas)', Europe: 'var(--r-europe)', Africa: 'var(--r-africa)', Oceania: 'var(--r-oceania)' };
+const COUNTRY = '#0072b2';   // one colour for all four countries (page 6 blue)
+
+const FINDINGS = [
+    {
+        key: 'where', button: 'Where', page: 2,
+        title: 'Growth in crop production by region', note: '1961 → 2024 (grey line = ×1, no change)',
+        unit: 'x', max: 6.5,
+        bars: [['Africa', 5.76, REGION.Africa], ['Asia', 5.59, REGION.Asia], ['Oceania', 4.52, REGION.Oceania], ['Americas', 4.02, REGION.Americas], ['Europe', 1.37, REGION.Europe]],
+        caption: 'Asia now grows half of the world\'s crops (50%, up from 35% in 1961). Africa grew fastest (×5.8), while Europe barely grew (×1.4).'
+    },
+    {
+        key: 'trend', button: 'Trends', page: 3,
+        title: 'World crop production', note: 'million tonnes',
+        unit: 'mt', max: 10000,
+        bars: [['1961', 2510, 'var(--ink)'], ['1990', 5163, 'var(--ink)'], ['2024', 9792, 'var(--ink)']],
+        caption: 'World crop production almost quadrupled (×3.9): it doubled by 1990 and nearly doubled again by 2024.'
+    },
+    {
+        key: 'leaders', button: 'Leaders', page: 4,
+        title: 'Top producers in 2024', note: 'total crop production, million tonnes',
+        unit: 'mt', max: 2000,
+        bars: [['China (mainland)', 1857, 'var(--ink)'], ['India', 1288, 'var(--ink)'], ['Brazil', 1144, 'var(--ink)'], ['USA', 729, 'var(--ink)'], ['Indonesia', 425, 'var(--ink)']],
+        caption: 'China, India and Brazil now grow 44% of the world\'s crops. In 1961 the USSR led and the USA was third; Brazil has grown ×10 since.'
+    },
+    {
+        key: 'land', button: 'Yield', page: 5,
+        title: 'Growth from 1961 to 2024, all crops', note: '(grey line = ×1, no change)',
+        unit: 'x', max: 6.5,
+        bars: [['Production', 3.90, 'var(--ink)'], ['Yield per hectare', 2.54, 'var(--green)'], ['Harvested area', 1.54, 'var(--gold)']],
+        caption: 'Output grew ×3.9 on only 54% more harvested land, so most of the growth came from higher yields (×2.5), not from new farmland.'
+    },
+    {
+        key: 'compare', button: 'Countries', page: 6,
+        title: 'Growth in yield per hectare, all crops', note: '1961 → 2024 (grey line = ×1)',
+        unit: 'x', max: 6.5,
+        bars: [['China (mainland)', 4.85, COUNTRY], ['Thailand', 3.55, COUNTRY], ['India', 3.44, COUNTRY], ['USA', 2.33, COUNTRY]],
+        caption: 'Yields rose in all four compared countries, fastest in China (×4.9). Thailand grew its output most (×9.5), but largely by farming 2.7× more land.'
+    }
+];
+const DEFAULT = 'land';   // the finding shown first (matches the page title "growth came from yield, not land")
+
+const fmt = (v, unit) => unit === 'x' ? '×' + (Math.round(v * 10) / 10).toFixed(1) : Math.round(v).toLocaleString('en-US');
 
 const page = document.getElementById('insight');
 const root = document.getElementById('insight-root');
 if (page && root) {
     const seg = root.querySelector('#ki-seg'), cap = root.querySelector('#ki-cap');
+    const card = root.querySelector('.ki-card');
+
+    // buttons: one per finding (replaces whatever buttons are in the HTML)
+    seg.innerHTML = FINDINGS.map(f => `<button type="button" data-k="${f.key}" aria-pressed="false">${f.button}</button>`).join('');
+
+    // bar area: replaces the first title + the three fixed rows in the HTML; the region-share block below stays
+    const firstTitle = card.querySelector('.ki-title');
+    card.querySelectorAll('.ki-row').forEach(r => r.remove());
+    const bars = document.createElement('div');
+    bars.className = 'ki-bars';
+    firstTitle.after(bars);
 
     function show(key) {
-        const s = STATS[key];
-        for (const k of ['p', 'y', 'a']) {
-            const row = root.querySelector(`[data-bar="${k}"]`);
-            row.querySelector('.ki-fill').style.setProperty('--w', (100 * s[k] / SCALE).toFixed(1) + '%');
-            row.querySelector('.ki-val').textContent = '×' + s[k].toFixed(1);
-        }
-        const land = Math.round((s.a - 1) * 100);
-        cap.textContent = `${s.label}: output grew ×${s.p.toFixed(1)} on ${s.a < 1.2 ? 'only ' : ''}${land}% more harvested land, while yield per hectare grew ×${s.y.toFixed(1)}.`;
+        const f = FINDINGS.find(x => x.key === key);
+        firstTitle.innerHTML = `${f.title} <small>${f.note}</small>`;
+        bars.innerHTML = f.bars.map(([label, value, color]) => `
+            <div class="ki-row">
+              <span class="ki-lab">${label}</span>
+              <span class="ki-track"><span class="ki-fill" style="background:${color};--w:0%"></span>${f.unit === 'x' ? '<span class="ki-one"></span>' : ''}</span>
+              <span class="ki-val">${fmt(value, f.unit)}</span>
+            </div>`).join('');
+        // let the bars grow from 0 on every switch
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            bars.querySelectorAll('.ki-fill').forEach((el, i) => {
+                el.style.setProperty('--w', (100 * Math.min(1, f.bars[i][1] / f.max)).toFixed(1) + '%');
+            });
+        }));
+        cap.innerHTML = `${f.caption} <a href="#p${f.page}" style="color:var(--ink);font-weight:600;white-space:nowrap">See page ${f.page} →</a>`;
         seg.querySelectorAll('button').forEach(b => {
             const on = b.dataset.k === key;
             b.classList.toggle('on', on);
@@ -34,8 +89,5 @@ if (page && root) {
     }
 
     seg.addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) show(b.dataset.k); });
-
-    // grow the bars from 0 the first time the page is seen
-    root.querySelectorAll('.ki-fill').forEach(f => f.style.setProperty('--w', '0%'));
-    whenVisible(page, () => show('all'));
+    whenVisible(page, () => show(DEFAULT));
 }
