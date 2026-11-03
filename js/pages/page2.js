@@ -3,14 +3,14 @@ import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 
 /** React/Vite page: copy data_page2/data/food to your project's public directory. */
-export default function Page2({ dataUrl = `${import.meta.env.BASE_URL}data_page2/data/food` }) {
+export default function Page2({ dataUrl = `./data_page2/data/food` }) {
   const container = useRef(null);
   useEffect(() => mountFoodMap(container.current, dataUrl), [dataUrl]);
   return React.createElement('section', { ref: container, className: 'food-map-page' });
 }
 
 export function init(_data, root) {
-  return mountFoodMap(root, `${import.meta.env.BASE_URL}data_page2/data/food`);
+  return mountFoodMap(root, `./data_page2/data/food`);
 }
 
 /** Optional vanilla-JS API. Returns a cleanup function. */
