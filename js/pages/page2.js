@@ -6,7 +6,10 @@ import { feature } from 'topojson-client';
 export default function Page2({ dataUrl = `./data_page2/data/food` }) {
   const container = useRef(null);
   useEffect(() => mountFoodMap(container.current, dataUrl), [dataUrl]);
-  return React.createElement('section', { ref: container, className: 'food-map-page' });
+  const el = document.createElement('section');
+  el.className = 'food-map-page';
+  if (container) container.current = el;
+  return el;
 }
 
 export function init(_data, root) {
